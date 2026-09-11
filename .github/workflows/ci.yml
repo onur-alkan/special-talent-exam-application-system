@@ -5,22 +5,20 @@ on:
     branches: [ main, master ]
   pull_request:
 
-# Disposable CI-only SA password for the job-scoped SQL Server container.
-# Not an institutional credential and not read from repository secrets.
-env:
-  OYS_CI_SQL_SA_PASSWORD: "OysCiSql2022-TestPw!"
-
 jobs:
   build-test:
     runs-on: ubuntu-latest
     env:
-      OYS_TEST_SQLSERVER_CONNECTION: "Server=127.0.0.1,1433;User ID=sa;Password=${{ env.OYS_CI_SQL_SA_PASSWORD }};Encrypt=True;TrustServerCertificate=True;"
+      # Disposable CI-only SA password for the job-scoped SQL Server container.
+      # Not an institutional credential and not read from repository secrets.
+      OYS_CI_SQL_SA_PASSWORD: "OysCiSql2022-TestPw!"
+      OYS_TEST_SQLSERVER_CONNECTION: "Server=127.0.0.1,1433;User ID=sa;Password=OysCiSql2022-TestPw!;Encrypt=True;TrustServerCertificate=True;"
     services:
       sqlserver:
         image: mcr.microsoft.com/mssql/server:2022-latest
         env:
           ACCEPT_EULA: "Y"
-          MSSQL_SA_PASSWORD: "${{ env.OYS_CI_SQL_SA_PASSWORD }}"
+          MSSQL_SA_PASSWORD: "OysCiSql2022-TestPw!"
           MSSQL_COLLATION: Turkish_CI_AS
         ports:
           - 1433:1433
@@ -54,10 +52,9 @@ jobs:
           echo "/opt/mssql-tools18/bin" >> "$GITHUB_PATH"
 
       - name: Wait for SQL Server
-        env:
-          SQLCMDPASSWORD: ${{ env.OYS_CI_SQL_SA_PASSWORD }}
         run: |
           set -euo pipefail
+          export SQLCMDPASSWORD="${OYS_CI_SQL_SA_PASSWORD}"
           for i in $(seq 1 40); do
             if sqlcmd -S 127.0.0.1,1433 -U sa -C -Q "SELECT 1" -b -o /dev/null; then
               echo "SQL Server is ready."
