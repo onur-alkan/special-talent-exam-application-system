@@ -1,0 +1,29 @@
+@{
+    var pageTitle = ViewData["Title"] as string ?? "";
+    var breadcrumb = ViewData["Breadcrumb"] as string;
+    var breadcrumbParentText = ViewData["BreadcrumbParentText"] as string;
+    var breadcrumbParentUrl = ViewData["BreadcrumbParentUrl"] as string;
+}
+<nav class="pe-breadcrumb px-3 pt-3 border-bottom bg-light" aria-label="breadcrumb">
+    <div class="container-fluid px-0">
+        @if (!string.IsNullOrWhiteSpace(pageTitle))
+        {
+            <h1 class="h4 mb-2">@pageTitle</h1>
+        }
+        <ol class="breadcrumb mb-2">
+            <li class="breadcrumb-item"><a href="/">Ana Sayfa</a></li>
+            @if (!string.IsNullOrWhiteSpace(breadcrumbParentText) && !string.IsNullOrWhiteSpace(breadcrumbParentUrl))
+            {
+                <li class="breadcrumb-item"><a href="@breadcrumbParentUrl">@breadcrumbParentText</a></li>
+            }
+            @if (!string.IsNullOrWhiteSpace(breadcrumb))
+            {
+                <li class="breadcrumb-item active" aria-current="page"><strong>@breadcrumb</strong></li>
+            }
+            else if (!string.IsNullOrWhiteSpace(pageTitle))
+            {
+                <li class="breadcrumb-item active" aria-current="page"><strong>@pageTitle</strong></li>
+            }
+        </ol>
+    </div>
+</nav>

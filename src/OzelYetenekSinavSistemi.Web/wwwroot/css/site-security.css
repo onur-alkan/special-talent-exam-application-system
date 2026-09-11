@@ -1,0 +1,949 @@
+/* Uygulama güvenlik/UX yardımcı stilleri — same-origin, sabit sınıflar. */
+/* Dış Google Fonts / CDN yok; CSP style-src/font-src gevşetilmez. */
+
+body {
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+}
+
+.site-auth-page {
+    box-sizing: border-box;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 28px 16px 32px;
+}
+
+.site-auth-page .site-auth-box {
+    margin: 0 auto;
+    padding-top: 0;
+}
+
+.site-login-page .site-auth-box {
+    width: 100%;
+    max-width: 480px;
+    background: #fff;
+    border: 1px solid #e5e6e7;
+    border-radius: 8px;
+    box-shadow: 0 4px 18px rgba(26, 36, 47, 0.08);
+    padding: 24px 28px 20px;
+}
+
+.site-forgot-page .site-auth-box {
+    width: 100%;
+    max-width: 480px;
+    background: #fff;
+    border: 1px solid #e5e6e7;
+    border-radius: 8px;
+    box-shadow: 0 4px 18px rgba(26, 36, 47, 0.08);
+    padding: 24px 28px 20px;
+}
+
+.site-login-page .site-auth-official-logo,
+.site-forgot-page .site-auth-official-logo {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    margin: 0 auto 10px;
+}
+
+.site-login-brand {
+    margin: 0 0 12px;
+    text-align: center;
+}
+
+.site-forgot-brand {
+    margin: 0 0 14px;
+    text-align: center;
+}
+
+/* Legacy oversized auth H1 (170px) özgüllüğünü aşmak için
+   element + page scope gerekir; aksi halde login başlığı şişer. */
+.site-login-page h1.site-login-title {
+    margin: 0;
+    color: #2f4050;
+    font-size: 1.25rem; /* ~20px @ 16px root */
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+    text-align: center;
+    overflow-wrap: normal;
+    word-break: normal;
+    max-width: 100%;
+}
+
+.site-forgot-page h1.site-forgot-title {
+    margin: 0;
+    color: #2f4050;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+    text-align: center;
+    overflow-wrap: normal;
+    word-break: normal;
+    max-width: 100%;
+}
+
+.site-login-subtitle {
+    margin: 6px 0 0;
+    color: #676a6c;
+    font-size: 0.92rem;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.site-forgot-lead {
+    margin: 10px 0 0;
+    color: #676a6c;
+    font-size: 0.92rem;
+    font-weight: 400;
+    line-height: 1.45;
+    text-align: left;
+}
+
+.site-login-apply {
+    margin: 16px 0 8px;
+}
+
+.site-login-register {
+    min-height: 44px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.site-login-register:focus {
+    outline: 2px solid #1ab394;
+    outline-offset: 2px;
+}
+
+.site-login-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 14px 0 4px;
+    color: #888;
+    font-size: 13px;
+    letter-spacing: 0.01em;
+}
+
+.site-login-divider::before,
+.site-login-divider::after {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    background: #e7eaec;
+}
+
+.site-login-divider span {
+    flex: 0 0 auto;
+}
+
+.site-login-form {
+    margin-top: 10px;
+    text-align: left;
+}
+
+.site-login-form .form-group {
+    margin-bottom: 14px;
+}
+
+.site-login-label {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #676a6c;
+}
+
+.site-login-help {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin: 6px 0 0;
+    line-height: 1.4;
+}
+
+.site-login-help .fa {
+    margin-top: 2px;
+    color: #1ab394;
+}
+
+.site-login-password-group {
+    margin-bottom: 12px;
+}
+
+.site-login-forgot-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
+}
+
+.site-login-forgot {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: #676a6c;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.site-login-forgot:hover,
+.site-login-forgot:focus {
+    color: #1ab394;
+    text-decoration: underline;
+}
+
+.site-login-forgot:focus {
+    outline: 2px solid #1ab394;
+    outline-offset: 2px;
+}
+
+.site-login-captcha-group {
+    margin-top: 2px;
+}
+
+.site-login-captcha-group .site-login-captcha-row {
+    margin-bottom: 8px;
+}
+
+.site-login-captcha-row {
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.site-login-page .site-captcha-image {
+    height: 48px;
+    max-width: 100%;
+    border: 1px solid #e5e6e7;
+    border-radius: 3px;
+    background: #fafbfc;
+}
+
+.site-captcha-refresh {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.site-captcha-refresh:focus {
+    outline: 2px solid #1ab394;
+    outline-offset: 2px;
+}
+
+.site-login-submit {
+    margin-top: 2px;
+    margin-bottom: 0;
+    min-height: 44px;
+    font-weight: 600;
+    color: #2f4050;
+    border: 1px solid #cfd4d8;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.site-login-submit:hover,
+.site-login-submit:focus {
+    color: #1ab394;
+    border-color: #1ab394;
+    background: #fff;
+}
+
+.site-login-submit:focus {
+    outline: 2px solid #1ab394;
+    outline-offset: 2px;
+}
+
+.site-login-footnote {
+    margin: 18px 0 0;
+    color: #99a1a8;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.site-forgot-form {
+    margin-top: 10px;
+    text-align: left;
+}
+
+.site-forgot-form .form-group {
+    margin-bottom: 14px;
+}
+
+.site-forgot-page .site-forgot-input,
+.site-forgot-page .form-control {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.site-forgot-help {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin: 6px 0 0;
+    line-height: 1.4;
+    text-align: left;
+}
+
+.site-forgot-help .fa {
+    margin-top: 2px;
+    color: #1ab394;
+}
+
+.site-forgot-submit {
+    min-height: 44px;
+    margin-top: 4px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    border-radius: 4px;
+}
+
+.site-forgot-submit:focus {
+    outline: 2px solid #1ab394;
+    outline-offset: 2px;
+}
+
+.site-forgot-back {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    color: #2f4050;
+    border: 1px solid #cfd4d8;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.site-forgot-back:hover,
+.site-forgot-back:focus {
+    color: #1ab394;
+    border-color: #1ab394;
+    background: #fff;
+    text-decoration: none;
+}
+
+.site-forgot-back:focus {
+    outline: 2px solid #1ab394;
+    outline-offset: 2px;
+}
+
+.site-forgot-footnote {
+    margin: 18px 0 0;
+    color: #99a1a8;
+    font-size: 12px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+@media (min-width: 768px) and (max-height: 900px) {
+    .site-login-page,
+    .site-forgot-page {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .site-login-page .site-auth-box,
+    .site-forgot-page .site-auth-box {
+        padding: 20px 24px 16px;
+    }
+
+    .site-login-page .site-auth-official-logo,
+    .site-forgot-page .site-auth-official-logo {
+        max-width: 280px;
+        margin-bottom: 6px;
+    }
+
+    .site-login-page h1.site-login-title,
+    .site-forgot-page h1.site-forgot-title {
+        font-size: 1.2rem;
+    }
+
+    .site-login-form .form-group,
+    .site-forgot-form .form-group {
+        margin-bottom: 12px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .site-auth-page {
+        padding: 20px 12px 24px;
+    }
+
+    .site-login-page .site-auth-box,
+    .site-forgot-page .site-auth-box {
+        padding: 20px 16px 16px;
+        border-radius: 6px;
+    }
+
+    .site-login-page .site-auth-official-logo,
+    .site-forgot-page .site-auth-official-logo {
+        max-width: 260px;
+    }
+
+    .site-login-page h1.site-login-title,
+    .site-forgot-page h1.site-forgot-title {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 359.98px) {
+    .site-login-page .site-auth-box,
+    .site-forgot-page .site-auth-box {
+        padding: 16px 12px 14px;
+    }
+
+    .site-login-page h1.site-login-title,
+    .site-forgot-page h1.site-forgot-title {
+        font-size: 1.05rem;
+    }
+
+    .site-login-forgot {
+        white-space: normal;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .site-login-page .site-auth-box.animated,
+    .site-forgot-page .site-auth-box.animated {
+        animation: none !important;
+    }
+}
+
+.site-auth-official-logo,
+.site-verification-official-logo {
+    display: block;
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+    margin: 0 auto 12px;
+}
+
+.site-document-official-logo {
+    display: block;
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+    margin: 0;
+    flex: 0 1 auto;
+}
+
+code,
+kbd,
+pre,
+samp {
+    font-family: Consolas, "Courier New", monospace;
+}
+
+.site-auth-box {
+    max-width: 480px;
+}
+
+.site-auth-box-wide {
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.site-register-shell.loginscreen.middle-box {
+    max-width: 1100px !important;
+    width: 100%;
+}
+
+.site-captcha-image {
+    height: 48px;
+    border: 1px solid #e5e6e7;
+    border-radius: 3px;
+}
+
+.university-logo {
+    box-sizing: border-box;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    object-fit: contain;
+    text-align: center;
+}
+
+.university-logo--sidebar {
+    width: 48px;
+    height: 48px;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.logo-element .university-logo--sidebar {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto;
+}
+
+body.mini-navbar .logo-element {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 8px;
+}
+
+.university-logo--auth {
+    width: 170px;
+    height: 170px;
+    margin: 0 auto;
+}
+
+.university-logo--document {
+    width: 90px;
+    height: 90px;
+}
+
+.university-logo-fallback {
+    border: 2px solid #1ab394;
+    border-radius: 10%;
+    background: #fff;
+    color: #1ab394;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1;
+}
+
+.university-logo--auth.university-logo-fallback {
+    font-size: 4.5rem;
+}
+
+.university-logo--document.university-logo-fallback {
+    font-size: 2rem;
+}
+
+.site-photo-max-200 {
+    max-height: 200px;
+}
+
+.site-preference-order-column {
+    width: 90px;
+}
+
+.oys-preference-option {
+    border: 1px solid #e7eaec;
+    border-radius: 3px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    background: #fff;
+}
+
+.oys-preference-option .checkbox {
+    margin: 0;
+}
+
+.oys-preference-option-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 0;
+}
+
+.oys-preference-option-label input[type="checkbox"] {
+    margin-top: 3px;
+    flex: 0 0 auto;
+}
+
+.oys-preference-selected {
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.oys-preference-selected-item {
+    border-top: 1px solid #e7eaec;
+    padding: 12px 0;
+}
+
+.oys-preference-selected-item:first-child {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.oys-preference-selected-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.oys-preference-selected-copy {
+    flex: 1 1 180px;
+    min-width: 0;
+}
+
+.oys-preference-selected-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.oys-preference-selected-actions .btn {
+    margin: 0;
+}
+
+@media (max-width: 767px) {
+    .oys-preference-selected-row {
+        flex-direction: column;
+    }
+
+    .oys-preference-selected-actions {
+        width: 100%;
+    }
+
+    .oys-preference-selected-actions .btn {
+        flex: 1 1 auto;
+    }
+}
+
+.site-mt-16 {
+    margin-top: 16px;
+}
+
+.site-text-left {
+    text-align: left;
+}
+
+.site-navbar-flush {
+    margin-bottom: 0;
+}
+
+/* Admin ve aday panellerinin ortak üst çubuğu.
+   Float/margin based navbar alignment is constrained in this component. */
+.navbar.navbar-static-top.oys-topbar {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    min-height: 52px;
+}
+
+.oys-topbar__brand {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    min-width: 0;
+    min-height: 52px;
+}
+
+.oys-topbar__toggle.minimalize-styl-2 {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    float: none;
+    margin: 0 12px 0 20px;
+    line-height: 1.2;
+}
+
+.oys-topbar__title {
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.oys-topbar__actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: row;
+    align-items: center;
+    min-height: 52px;
+    margin: 0;
+    padding: 0 20px 0 0;
+}
+
+.oys-topbar__actions > li {
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+}
+
+.oys-topbar__actions > li:last-child {
+    margin-right: 0;
+}
+
+.oys-topbar__actions .welcome-message {
+    line-height: 1.2;
+}
+
+.oys-topbar__logout form {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.oys-topbar__logout .nav-link {
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+    margin: 0;
+    padding: 0 10px;
+    line-height: 1.2;
+}
+
+@media (max-width: 575.98px) {
+    .oys-topbar__toggle.minimalize-styl-2 {
+        margin-right: 8px;
+        margin-left: 8px;
+    }
+
+    .oys-topbar__title {
+        font-size: 14px;
+    }
+
+    .oys-topbar__actions {
+        padding-right: 4px;
+    }
+}
+
+/* Candidate, ApplicationManager ve SuperAdmin için ortak sidebar çıkış bileşeni. */
+.oys-sidebar-logout-item {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.oys-sidebar-logout {
+    box-sizing: border-box;
+    width: calc(100% - 32px);
+    max-width: calc(100% - 32px);
+    margin: 10px 16px 0;
+    overflow: hidden;
+}
+
+.oys-sidebar-logout__button {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 5px 10px;
+    overflow: hidden;
+    border: 1px solid #e7eaec;
+    border-radius: 3px;
+    background: #fff;
+    color: #676a6c;
+    font: inherit;
+    line-height: 1.5;
+    text-align: center;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.oys-sidebar-logout__button:hover,
+.oys-sidebar-logout__button:focus {
+    border-color: #d2d2d2;
+    color: #1ab394;
+}
+
+.oys-sidebar-logout__button .fa {
+    flex: 0 0 auto;
+    margin-right: 6px;
+}
+
+.oys-sidebar-logout__text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body.mini-navbar:not(.fixed-sidebar):not(.canvas-menu) .oys-sidebar-logout {
+    width: 70px;
+    max-width: 70px;
+    margin: 8px 0 0;
+}
+
+body.mini-navbar:not(.fixed-sidebar):not(.canvas-menu) .oys-sidebar-logout__button {
+    justify-content: flex-start;
+    width: 70px;
+    max-width: 70px;
+    padding: 14px 20px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #a7b1c2;
+    font-size: 16px;
+}
+
+body.mini-navbar:not(.fixed-sidebar):not(.canvas-menu) .oys-sidebar-logout__button:hover,
+body.mini-navbar:not(.fixed-sidebar):not(.canvas-menu) .oys-sidebar-logout__button:focus {
+    background-color: #293846;
+    color: #fff;
+}
+
+body.mini-navbar:not(.fixed-sidebar):not(.canvas-menu) .oys-sidebar-logout__button .fa {
+    margin-right: 0;
+}
+
+body.mini-navbar:not(.fixed-sidebar):not(.canvas-menu) .oys-sidebar-logout__text {
+    display: none;
+}
+
+.site-status-code-danger {
+    color: #ed5565;
+}
+
+.site-hidden {
+    display: none;
+}
+
+/* Tek gönderim korumalı formlar (kayıt / profil fotoğrafı) */
+.oys-submit-spinner {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-right: 0.4em;
+    vertical-align: -0.125em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: oys-submit-spin 0.75s linear infinite;
+}
+
+.oys-submit-spinner[hidden] {
+    display: none;
+}
+
+button.oys-submit-loading .oys-submit-spinner {
+    display: inline-block;
+}
+
+@keyframes oys-submit-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+form[data-oys-single-submit] {
+    position: relative;
+}
+
+.oys-submit-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.55);
+    cursor: wait;
+}
+
+form.oys-is-submitting .oys-submit-overlay {
+    display: block;
+}
+
+.js-hide-on-image-error.is-hidden-by-error {
+    display: none !important;
+}
+
+/* DataTables length select: sayfa boyutu rakamları kesilmesin; masaüstünde tek satır. */
+div.dataTables_wrapper div.dataTables_length {
+    white-space: nowrap;
+}
+
+div.dataTables_wrapper div.dataTables_length label {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+div.dataTables_wrapper div.dataTables_length select {
+    min-width: 4.75rem;
+    width: auto;
+}
+
+@media (max-width: 767.98px) {
+    div.dataTables_wrapper div.dataTables_length {
+        white-space: normal;
+    }
+}
+
+/* Screen-reader-only label/metin — görünür tasarımı bozmadan erişilebilir isim sağlar. */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/*
+ * DataTables Buttons print opens about:blank and clones app stylesheets.
+ * html/body { height: 100% } can create a blank second print page.
+ * body.dt-print-view exists only in that popup — never on the live app UI.
+ */
+body.dt-print-view {
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+}
+
+body.dt-print-view > h1 {
+    margin: 0 0 12px 0 !important;
+    padding: 0 !important;
+}
+
+body.dt-print-view > div:empty {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+body.dt-print-view table {
+    margin: 0 !important;
+    page-break-after: avoid;
+    break-after: avoid-page;
+}
+
+@media print {
+    body.dt-print-view {
+        height: auto !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    body.dt-print-view table {
+        page-break-after: avoid;
+        break-after: avoid-page;
+    }
+
+    body.dt-print-view > *:last-child {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+}

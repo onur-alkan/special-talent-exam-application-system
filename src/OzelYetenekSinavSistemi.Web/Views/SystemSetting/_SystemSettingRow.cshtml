@@ -1,0 +1,10 @@
+@model OzelYetenekSinavSistemi.Application.ViewModels.SystemSettings.SystemSettingUpdateViewModel
+
+<form asp-action="Update" method="post" class="form-inline">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="SettingKey" />
+    <label class="sr-only" asp-for="SettingValue"></label>
+    <input asp-for="SettingValue" class="form-control form-control-sm mr-2" />
+    <span asp-validation-for="SettingValue" class="text-danger small d-block"></span>
+    <button type="submit" class="btn btn-sm btn-primary">Kaydet</button>
+</form>

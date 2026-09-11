@@ -1,0 +1,97 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Giriş";
+    ViewData["AuthBodyClass"] = "site-login-page";
+    Layout = "_AuthLayout";
+}
+
+<header class="site-login-brand">
+    <h1 class="site-login-title">Özel Yetenek Sınavları Başvuru Sistemi</h1>
+    <p class="site-login-subtitle">Public Portfolio Edition</p>
+</header>
+
+<div class="site-login-apply">
+    <a class="btn btn-primary block full-width site-login-register"
+       asp-action="Register">
+        Aday Başvurusu Oluştur
+    </a>
+</div>
+
+<div class="site-login-divider" role="separator" aria-hidden="true">
+    <span>Hesabınız varsa giriş yapın</span>
+</div>
+
+<form asp-action="Login"
+      asp-controller="Account"
+      method="post"
+      class="site-login-form"
+      data-oys-captcha-root>
+    <input type="hidden" asp-for="ReturnUrl" />
+    <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+
+    <div class="form-group">
+        <label asp-for="LoginIdentifier" class="sr-only">E-posta adresi veya T.C. kimlik numarası</label>
+        <input asp-for="LoginIdentifier"
+               class="form-control"
+               placeholder="E-posta adresi veya T.C. kimlik numarası"
+               autocomplete="username"
+               maxlength="254"
+               data-oys-login-identifier
+               aria-describedby="login-identifier-help" />
+        <span asp-validation-for="LoginIdentifier" class="text-danger small"></span>
+        <p id="login-identifier-help" class="site-login-help text-muted small">
+            <i class="fa fa-info-circle" aria-hidden="true"></i>
+            Yabancı uyruklu adaylar e-posta adresleriyle giriş yapmalıdır.
+        </p>
+    </div>
+
+    <div class="form-group site-login-password-group">
+        <label asp-for="Password" class="sr-only"></label>
+        <input asp-for="Password"
+               class="form-control"
+               placeholder="Parola"
+               autocomplete="current-password" />
+        <span asp-validation-for="Password" class="text-danger small"></span>
+        <div class="site-login-forgot-row">
+            <a class="site-login-forgot"
+               asp-action="ForgotPassword">Parolamı Unuttum</a>
+        </div>
+    </div>
+
+    <div class="form-group site-login-captcha-group">
+        <label asp-for="CaptchaInput" class="site-login-label"></label>
+        <div class="site-login-captcha-row d-flex align-items-center">
+            <img id="captchaImage"
+                 class="site-captcha-image"
+                 src="@Url.Action("Captcha", "Account")"
+                 data-captcha-url="@Url.Action("Captcha", "Account")"
+                 data-oys-captcha-image
+                 alt="Güvenlik kodu" />
+            <button type="button"
+                    id="captchaRefresh"
+                    class="btn btn-white btn-sm m-l-sm js-captcha-refresh site-captcha-refresh"
+                    data-oys-captcha-refresh
+                    title="Güvenlik kodunu yenile"
+                    aria-label="Güvenlik kodunu yenile">
+                <i class="fa fa-refresh" aria-hidden="true"></i>
+            </button>
+        </div>
+        <input asp-for="CaptchaInput"
+               class="form-control"
+               placeholder="Güvenlik kodu"
+               autocomplete="off"
+               data-oys-captcha-input />
+        <span asp-validation-for="CaptchaInput" class="text-danger small"></span>
+        <span class="sr-only" data-oys-captcha-status aria-live="polite"></span>
+    </div>
+
+    <button type="submit" class="btn btn-white block full-width site-login-submit">Giriş Yap</button>
+</form>
+
+<p class="site-login-footnote">
+    &copy; @DateTime.Now.Year Özel Yetenek Sınavları Başvuru Sistemi
+</p>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,66 @@
+@using OzelYetenekSinavSistemi.Domain.Entities
+@using OzelYetenekSinavSistemi.Application.DTOs.Applications
+@{
+    Layout = "_CandidateLayout";
+    var activeExams = ViewBag.ActiveExams as IReadOnlyList<ExamPeriod> ?? new List<ExamPeriod>();
+    var myApplications = ViewBag.MyApplications as IReadOnlyList<CandidateApplicationDetail> ?? new List<CandidateApplicationDetail>();
+}
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header"><h2 class="h5 mb-0">Aktif Sınav Dönemleri</h2></div>
+            <div class="card-body text-center">
+                <p class="display-6 text-primary mb-3">@ViewBag.ActiveExamCount</p>
+                <a asp-controller="CandidateApplication" asp-action="Index" class="btn btn-sm btn-primary">Başvuru Yap</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header"><h2 class="h5 mb-0">Başvurularım</h2></div>
+            <div class="card-body text-center">
+                <p class="display-6 text-primary mb-3">@ViewBag.MyApplicationCount</p>
+                <a asp-controller="CandidateApplication" asp-action="My" class="btn btn-sm btn-outline-secondary">Başvurularımı Gör</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mt-1">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header"><h2 class="h5 mb-0">Başvurabileceğiniz Sınav Dönemleri</h2></div>
+            <div class="card-body">
+                @if (activeExams.Count == 0)
+                {
+                    <p class="text-muted mb-0">Şu anda aktif bir sınav dönemi bulunmuyor.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr><th>Sınav / Başvuru</th><th>Başlangıç</th><th>Bitiş</th><th>Maks. Tercih</th><th></th></tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var exam in activeExams)
+                                {
+                                    <tr>
+                                        <td>@exam.Title</td>
+                                        <td>@exam.StartDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>@exam.EndDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>@exam.MaxPreferences</td>
+                                        <td class="text-end">
+                                            <a asp-controller="CandidateApplication" asp-action="Apply" asp-route-id="@exam.Id" class="btn btn-sm btn-primary">Başvur</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,122 @@
+@{
+    var isSuperAdmin = User.IsInRole(DomainConstants.RoleNames.SuperAdmin);
+    string Active(string controller) =>
+        string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), controller, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+}
+<nav class="pe-side-nav" aria-label="Yönetim menüsü">
+    <div class="pe-side-nav__header px-3 py-3 border-bottom">
+        <div class="dropdown profile-element">
+            <university-logo variant="sidebar"></university-logo>
+            <div class="mt-2">
+                <span class="d-block fw-bold">@User.GetFullName()</span>
+                <span class="text-muted small">
+                    @(isSuperAdmin ? "Süper Admin" : "Başvuru Yöneticisi")
+                </span>
+            </div>
+        </div>
+        <div class="logo-element">
+            <university-logo variant="sidebar"></university-logo>
+        </div>
+    </div>
+
+    <ul class="nav flex-column pe-side-nav__list px-2 py-2" id="side-menu">
+        <li class="nav-item @Active("AdminDashboard")">
+            <a class="nav-link @Active("AdminDashboard")"
+               asp-controller="AdminDashboard"
+               asp-action="Index"
+               title="Dashboard"
+               aria-label="Dashboard">
+                <span class="nav-label">Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item @Active("ExamPeriod")">
+            <a class="nav-link @Active("ExamPeriod")"
+               asp-controller="ExamPeriod"
+               asp-action="Index"
+               title="Sınav Dönemleri"
+               aria-label="Sınav Dönemleri">
+                <span class="nav-label">Sınav Dönemleri</span>
+            </a>
+        </li>
+        @if (isSuperAdmin)
+        {
+            <li class="nav-item @Active("ExamPreferenceOption")">
+                <a class="nav-link @Active("ExamPreferenceOption")"
+                   asp-controller="ExamPreferenceOption"
+                   asp-action="Index"
+                   title="Tercih Seçenekleri"
+                   aria-label="Tercih Seçenekleri">
+                    <span class="nav-label">Tercih Seçenekleri</span>
+                </a>
+            </li>
+            <li class="nav-item @Active("UserManagement")">
+                <a class="nav-link @Active("UserManagement")"
+                   asp-controller="UserManagement"
+                   asp-action="Index"
+                   title="Personel Yönetimi"
+                   aria-label="Personel Yönetimi">
+                    <span class="nav-label">Personel Yönetimi</span>
+                </a>
+            </li>
+            <li class="nav-item @Active("ExamPeriodManager")">
+                <a class="nav-link @Active("ExamPeriodManager")"
+                   asp-controller="ExamPeriodManager"
+                   asp-action="Index"
+                   title="Başvuru Yöneticileri"
+                   aria-label="Başvuru Yöneticileri">
+                    <span class="nav-label">Başvuru Yöneticileri</span>
+                </a>
+            </li>
+        }
+        <li class="nav-item @Active("CandidateManagement")">
+            <a class="nav-link @Active("CandidateManagement")"
+               asp-controller="CandidateManagement"
+               asp-action="Index"
+               title="Aday Başvuruları"
+               aria-label="Aday Başvuruları">
+                <span class="nav-label">Aday Başvuruları</span>
+            </a>
+        </li>
+        <li class="nav-item @Active("ExamResult")">
+            <a class="nav-link @Active("ExamResult")"
+               asp-controller="ExamResult"
+               asp-action="Index"
+               title="Sınav Sonuçları"
+               aria-label="Sınav Sonuçları">
+                <span class="nav-label">Sınav Sonuçları</span>
+            </a>
+        </li>
+        @if (isSuperAdmin)
+        {
+            <li class="nav-item @Active("AuditLog")">
+                <a class="nav-link @Active("AuditLog")"
+                   asp-controller="AuditLog"
+                   asp-action="Index"
+                   title="Loglar"
+                   aria-label="Loglar">
+                    <span class="nav-label">Loglar</span>
+                </a>
+            </li>
+            <li class="nav-item @Active("SystemSetting")">
+                <a class="nav-link @Active("SystemSetting")"
+                   asp-controller="SystemSetting"
+                   asp-action="Index"
+                   title="Sistem Ayarları"
+                   aria-label="Sistem Ayarları">
+                    <span class="nav-label">Sistem Ayarları</span>
+                </a>
+            </li>
+        }
+        <li class="nav-item oys-sidebar-logout-item mt-2">
+            <form asp-controller="Account" asp-action="Logout" method="post" class="oys-sidebar-logout">
+                <button type="submit"
+                        class="oys-sidebar-logout__button"
+                        aria-label="Çıkış Yap"
+                        title="Çıkış Yap">
+                    <span class="pe-logout-mark" aria-hidden="true"></span>
+                    <span class="nav-label oys-sidebar-logout__text">Çıkış</span>
+                </button>
+            </form>
+        </li>
+    </ul>
+</nav>

@@ -1,0 +1,15 @@
+@model OzelYetenekSinavSistemi.Application.ViewModels.ExamPeriods.ExamPeriodFormViewModel
+
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">Yeni Sınav Dönemi</h5></div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <partial name="_ExamPeriodFields" model="Model" />
+            <button type="submit" class="btn btn-primary">Oluştur</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Vazgeç</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

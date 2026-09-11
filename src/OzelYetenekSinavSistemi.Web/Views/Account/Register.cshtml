@@ -1,0 +1,430 @@
+@model RegisterViewModel
+@using OzelYetenekSinavSistemi.Application.Common
+@using OzelYetenekSinavSistemi.Application.Validation
+@using OzelYetenekSinavSistemi.Domain.Entities
+@using OzelYetenekSinavSistemi.Domain.Enums
+@{
+    ViewData["Title"] = "Aday Başvurusu";
+    Layout = "_AuthLayout";
+    var ygsYears = ViewBag.YgsYears as IReadOnlyList<YgsYear> ?? new List<YgsYear>();
+}
+
+<div class="card site-auth-box-wide">
+    <div class="card-header text-center">
+        <h2 class="h4 mb-1">Aday Kayıt Formu</h2>
+        <small class="text-muted">Özel Yetenek Sınavları Başvuru Sistemi</small>
+    </div>
+    <div class="card-body">
+        <form asp-action="Register"
+              asp-controller="Account"
+              method="post"
+              enctype="multipart/form-data"
+              novalidate
+              data-oys-single-submit
+              data-oys-identity-form>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="FirstName" class="form-label"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="LastName" class="form-label"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="IdentityDocumentType" class="form-label"></label>
+                <select asp-for="IdentityDocumentType"
+                        class="form-select"
+                        data-oys-identity-type
+                        aria-describedby="identity-type-help identity-type-status">
+                    <option value="@((int)IdentityDocumentType.TurkishIdentityNumber)">T.C. Kimlik Numarası</option>
+                    <option value="@((int)IdentityDocumentType.ForeignIdentityNumber)">Yabancı Kimlik Numarası</option>
+                    <option value="@((int)IdentityDocumentType.Passport)">Pasaport</option>
+                </select>
+                <small id="identity-type-help" class="form-text text-muted">
+                    Kayıt için kullanılacak kimlik belgesi türünü seçiniz.
+                </small>
+                <span asp-validation-for="IdentityDocumentType" class="text-danger small"></span>
+            </div>
+
+            <div id="identity-type-status"
+                 class="visually-hidden"
+                 data-oys-identity-live
+                 aria-live="polite"
+                 aria-atomic="true"></div>
+
+            <div class="mb-3" data-oys-identity-number-group>
+                <label asp-for="IdentityNumber" id="identity-number-label" class="form-label" data-oys-identity-number-label></label>
+                <input asp-for="IdentityNumber"
+                       class="form-control"
+                       autocomplete="off"
+                       data-oys-identity-number
+                       aria-describedby="identity-number-help identity-number-validation" />
+                <small id="identity-number-help" class="form-text text-muted" data-oys-identity-number-help></small>
+                <span asp-validation-for="IdentityNumber"
+                      class="text-danger small"
+                      id="identity-number-validation"></span>
+            </div>
+
+            <div class="mb-3"
+                 data-oys-turkish-nationality-group
+                 aria-hidden="@(Model.IdentityDocumentType == IdentityDocumentType.TurkishIdentityNumber ? "false" : "true")"
+                 hidden="@(Model.IdentityDocumentType == IdentityDocumentType.TurkishIdentityNumber ? null : "hidden")">
+                <label for="turkish-nationality-display" class="form-label">Uyruk</label>
+                <input type="text"
+                       id="turkish-nationality-display"
+                       class="form-control"
+                       value="Türkiye"
+                       readonly
+                       aria-readonly="true" />
+                @* Tek NationalityCountryCode gönderimi: T.C. için gizli alan, yabancı/pasaport için select.
+                   İkisi aynı anda enabled olursa model binder "TR,AZ" birleştirmesiyle StringLength hatası üretir. *@
+                <input type="hidden"
+                       id="turkish-NationalityCountryCode"
+                       name="NationalityCountryCode"
+                       value="TR"
+                       data-oys-turkish-nationality-code
+                       disabled="@(Model.IdentityDocumentType != IdentityDocumentType.TurkishIdentityNumber ? "disabled" : null)" />
+            </div>
+
+            <div class="mb-3"
+                 data-oys-nationality-group
+                 aria-hidden="@(Model.IdentityDocumentType != IdentityDocumentType.TurkishIdentityNumber ? "false" : "true")"
+                 hidden="@(Model.IdentityDocumentType != IdentityDocumentType.TurkishIdentityNumber ? null : "hidden")">
+                <label asp-for="NationalityCountryCode" class="form-label"></label>
+                <select asp-for="NationalityCountryCode"
+                        class="form-select"
+                        data-oys-nationality-select
+                        disabled="@(Model.IdentityDocumentType == IdentityDocumentType.TurkishIdentityNumber ? "disabled" : null)">
+                    <option value="">-- Ülke Seçiniz --</option>
+                    @foreach (var country in Model.ForeignNationalityCountries)
+                    {
+                        <option value="@country.Code">@country.DisplayName</option>
+                    }
+                </select>
+                <span asp-validation-for="NationalityCountryCode" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3"
+                 data-oys-issuing-group
+                 aria-hidden="@(Model.IdentityDocumentType == IdentityDocumentType.Passport ? "false" : "true")"
+                 hidden="@(Model.IdentityDocumentType == IdentityDocumentType.Passport ? null : "hidden")">
+                <label asp-for="IssuingCountryCode" class="form-label"></label>
+                <select asp-for="IssuingCountryCode"
+                        class="form-select"
+                        data-oys-issuing-select
+                        disabled="@(Model.IdentityDocumentType == IdentityDocumentType.Passport ? null : "disabled")">
+                    <option value="">-- Ülke Seçiniz --</option>
+                    @foreach (var country in Model.IssuingCountries)
+                    {
+                        <option value="@country.Code">@country.DisplayName</option>
+                    }
+                </select>
+                <span asp-validation-for="IssuingCountryCode" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3"
+                 data-oys-passport-expiry-group
+                 aria-hidden="@(Model.IdentityDocumentType == IdentityDocumentType.Passport ? "false" : "true")"
+                 hidden="@(Model.IdentityDocumentType == IdentityDocumentType.Passport ? null : "hidden")">
+                <label asp-for="PassportExpiryDate" class="form-label"></label>
+                <input asp-for="PassportExpiryDate"
+                       class="form-control"
+                       type="date"
+                       data-oys-passport-expiry
+                       disabled="@(Model.IdentityDocumentType == IdentityDocumentType.Passport ? null : "disabled")" />
+                <span asp-validation-for="PassportExpiryDate" class="text-danger small"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8 mb-3" data-oys-birth-date-root>
+                    <label class="form-label">@Html.DisplayNameFor(m => m.BirthDate)</label>
+                    <div class="row">
+                        <div class="col-4">
+                            <label asp-for="BirthDateDay" class="visually-hidden"></label>
+                            <select asp-for="BirthDateDay"
+                                    class="form-select"
+                                    data-oys-birth-day
+                                    autocomplete="bday-day"
+                                    aria-label="Doğum günü"
+                                    aria-describedby="birth-date-help birth-date-validation">
+                                <option value="">Gün</option>
+                                @for (var day = 1; day <= 31; day++)
+                                {
+                                    <option value="@day">@day</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label asp-for="BirthDateMonth" class="visually-hidden"></label>
+                            <select asp-for="BirthDateMonth"
+                                    class="form-select"
+                                    data-oys-birth-month
+                                    autocomplete="bday-month"
+                                    aria-label="Doğum ayı"
+                                    aria-describedby="birth-date-help birth-date-validation">
+                                <option value="">Ay</option>
+                                @for (var month = 1; month <= 12; month++)
+                                {
+                                    <option value="@month">@BirthDateRules.TurkishMonthNames[month]</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label asp-for="BirthDateYear" class="visually-hidden"></label>
+                            <select asp-for="BirthDateYear"
+                                    class="form-select"
+                                    data-oys-birth-year
+                                    autocomplete="bday-year"
+                                    aria-label="Doğum yılı"
+                                    aria-describedby="birth-date-help birth-date-validation"
+                                    data-val="true"
+                                    data-val-birthdateparts="@BirthDateRules.RequiredMessage">
+                                <option value="">Yıl</option>
+                                @foreach (var year in Model.BirthDateYearOptions)
+                                {
+                                    <option value="@year">@year</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <small id="birth-date-help" class="form-text text-muted">
+                        Doğum tarihinizi gün, ay ve yıl olarak seçiniz.
+                    </small>
+                    <span id="birth-date-validation"
+                          asp-validation-for="BirthDate"
+                          class="text-danger small"
+                          data-oys-birth-date-validation></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="HighSchool" class="form-label"></label>
+                    <input asp-for="HighSchool" class="form-control" />
+                    <span asp-validation-for="HighSchool" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DepartmentField" class="form-label"></label>
+                    <input asp-for="DepartmentField" class="form-control" />
+                    <span asp-validation-for="DepartmentField" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="YgsScore" class="form-label"></label>
+                    <input asp-for="YgsScore" class="form-control" type="number" step="0.001" />
+                    <span asp-validation-for="YgsScore" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="YgsYearId" class="form-label"></label>
+                    <select asp-for="YgsYearId" class="form-select select2-years">
+                        <option value="">-- YGS Yılı Seçiniz --</option>
+                        @foreach (var year in ygsYears)
+                        {
+                            <option value="@year.Id">@year.Year</option>
+                        }
+                    </select>
+                    <span asp-validation-for="YgsYearId" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Address" class="form-label"></label>
+                <textarea asp-for="Address" class="form-control" rows="2"></textarea>
+                <span asp-validation-for="Address" class="text-danger small"></span>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-6" data-oys-phone-root>
+                    <label asp-for="Phone" class="form-label"></label>
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <label asp-for="PhoneCountryCode" class="visually-hidden"></label>
+                            <select asp-for="PhoneCountryCode"
+                                    class="form-select"
+                                    data-oys-phone-country
+                                    autocomplete="tel-country-code"
+                                    aria-label="Telefon ülke kodu">
+                                @foreach (var country in Model.PhoneCountries)
+                                {
+                                    <option value="@country.Code" data-dial-code="@country.DialCode">@country.Label</option>
+                                }
+                            </select>
+                            <span asp-validation-for="PhoneCountryCode" class="text-danger small"></span>
+                        </div>
+                        <div class="col-sm-7">
+                            <input asp-for="Phone"
+                                   class="form-control"
+                                   type="tel"
+                                   inputmode="tel"
+                                   autocomplete="tel-national"
+                                   maxlength="@MobilePhoneNumber.MaxInputLength"
+                                   placeholder="5XX XXX XX XX"
+                                   data-oys-phone-input
+                                   aria-describedby="phone-help phone-validation" />
+                        </div>
+                    </div>
+                    <small id="phone-help" class="form-text text-muted">
+                        Türkiye numaraları için 5XX XXX XX XX biçiminde giriniz.
+                        Yurt dışı numaraları için ülke kodunu seçiniz.
+                    </small>
+                    <span id="phone-validation" asp-validation-for="Phone" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input asp-for="HasDisability"
+                       type="checkbox"
+                       class="form-check-input js-disability-toggle"
+                       data-disability-container="#disability-description-container"
+                       data-disability-field="#DisabilityDetails" />
+                <label asp-for="HasDisability" class="form-check-label">@Html.DisplayNameFor(m => m.HasDisability)</label>
+            </div>
+            <div class="mb-3"
+                 id="disability-description-container"
+                 data-disability-description-container
+                 aria-hidden="@(Model.HasDisability ? "false" : "true")"
+                 hidden="@(Model.HasDisability ? null : "hidden")">
+                <label asp-for="DisabilityDetails" class="form-label"></label>
+                <textarea asp-for="DisabilityDetails"
+                          class="form-control"
+                          rows="2"
+                          disabled="@(Model.HasDisability ? null : "disabled")"></textarea>
+                <span asp-validation-for="DisabilityDetails" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3 oys-photo-upload" data-oys-photo-upload>
+                <label asp-for="Photo" class="form-label">Vesikalık Fotoğraf</label>
+                <div class="oys-photo-controls">
+                    <input asp-for="Photo"
+                           type="file"
+                           class="oys-photo-input"
+                           accept="@PhotoUploadLimits.AcceptAttribute"
+                           data-oys-photo-input
+                           data-oys-photo-max-bytes="@PhotoUploadLimits.MaxFileBytes"
+                           aria-describedby="photo-help photo-selected photo-validation"
+                           aria-invalid="@(ViewData.ModelState[nameof(RegisterViewModel.Photo)]?.Errors.Count > 0 ? "true" : "false")" />
+                    <button type="button"
+                            class="btn btn-secondary btn-sm oys-photo-pick"
+                            data-oys-photo-pick>
+                        Fotoğraf Seç
+                    </button>
+                    <span id="photo-selected"
+                          class="oys-photo-status"
+                          data-oys-photo-status
+                          aria-live="polite">Fotoğraf seçilmedi</span>
+                </div>
+                <div class="oys-photo-preview-wrap" data-oys-photo-preview-wrap hidden>
+                    <p class="oys-photo-preview-loading text-muted small"
+                       data-oys-photo-preview-loading
+                       hidden>Önizleme yükleniyor…</p>
+                    <img class="oys-photo-preview"
+                         data-oys-photo-preview
+                         alt="Seçilen vesikalık fotoğraf önizlemesi"
+                         hidden />
+                </div>
+                <small id="photo-help" class="form-text text-muted">
+                    Son 6 ay içinde çekilmiş, önden, adayı kolaylıkla tanıtan JPG, JPEG veya PNG fotoğraf yükleyiniz. Dosya boyutu en fazla @PhotoUploadLimits.MaxFileSizeDisplay olabilir.
+                </small>
+                <span asp-validation-for="Photo" class="text-danger small" id="photo-validation" data-oys-photo-validation></span>
+                <p class="text-muted small m-t-xs">@PhotoUploadMessages.ReselectHint</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="ConfirmPassword" class="form-label"></label>
+                    <input asp-for="ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 text-center mt-3">
+                <button type="submit" class="btn btn-primary" data-oys-submit-button>
+                    <span class="oys-submit-spinner" hidden aria-hidden="true"></span>
+                    <span class="oys-submit-label">Kaydı Tamamla</span>
+                </button>
+                <a asp-action="Login" class="btn btn-secondary">Girişe Dön</a>
+                <p class="text-muted small mt-2" data-oys-submit-status aria-live="polite" aria-atomic="true"></p>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .oys-photo-upload .oys-photo-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem 0.75rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .oys-photo-upload .oys-photo-input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .oys-photo-upload .oys-photo-status {
+            color: #676a6c;
+            font-size: 13px;
+        }
+
+        .oys-photo-upload .oys-photo-preview-wrap {
+            margin: 0.5rem 0;
+            min-height: 1.25rem;
+        }
+
+        .oys-photo-upload .oys-photo-preview-loading {
+            margin: 0 0 0.35rem;
+        }
+
+        .oys-photo-upload .oys-photo-preview {
+            display: block;
+            max-width: 120px;
+            max-height: 120px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border: 1px solid #e5e6e7;
+            background: #f8f8f8;
+        }
+
+        .oys-photo-upload .oys-photo-preview[hidden] {
+            display: none !important;
+        }
+
+        .oys-photo-upload .m-t-xs {
+            margin-top: 0.35rem;
+        }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

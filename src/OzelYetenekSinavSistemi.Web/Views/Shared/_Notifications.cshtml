@@ -1,0 +1,21 @@
+@{
+    var toastSuccess = TempData["ToastSuccess"] as string;
+    var toastError = TempData["ToastError"] as string;
+    var toastWarning = TempData["ToastWarning"] as string;
+    var toastInfo = TempData["ToastInfo"] as string;
+    var hasToast = !string.IsNullOrWhiteSpace(toastSuccess)
+        || !string.IsNullOrWhiteSpace(toastError)
+        || !string.IsNullOrWhiteSpace(toastWarning)
+        || !string.IsNullOrWhiteSpace(toastInfo);
+}
+@if (hasToast)
+{
+    @* TempData HTML attribute olarak encode edilir; JS string birleştirme veya Raw HTML yok. *@
+    <div id="js-toast-messages"
+         class="d-none"
+         hidden
+         data-success="@toastSuccess"
+         data-error="@toastError"
+         data-warning="@toastWarning"
+         data-info="@toastInfo"></div>
+}

@@ -1,0 +1,15 @@
+@{
+    ViewData["Title"] = "Sayfa Bulunamadı";
+    Layout = "_AuthLayout";
+}
+
+<div class="text-center">
+    <h1 class="logo-name">404</h1>
+    <h3 class="font-bold">Sayfa Bulunamadı</h3>
+    <div class="error-desc">
+        Aradığınız sayfa mevcut değil veya taşınmış olabilir.
+    </div>
+    <div class="m-t">
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Ana Sayfaya Dön</a>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+<header class="border-bottom bg-white">
+    <nav class="navbar navbar-expand navbar-static-top site-navbar-flush oys-topbar px-3"
+         role="navigation"
+         aria-label="Üst menü">
+        <div class="navbar-header oys-topbar__brand d-flex align-items-center gap-2">
+            <button type="button"
+                    class="btn btn-primary navbar-minimalize minimalize-styl-2 oys-topbar__toggle d-lg-none"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#peSideNav"
+                    aria-controls="peSideNav"
+                    aria-expanded="false"
+                    title="Menüyü aç veya kapat"
+                    aria-label="Menüyü aç veya kapat">
+                Menü
+            </button>
+            <span class="font-bold oys-topbar__title">Özel Yetenek Sınavları Başvuru Sistemi</span>
+        </div>
+        <ul class="nav navbar-top-links navbar-right oys-topbar__actions ms-auto align-items-center mb-0">
+            <li>
+                <span class="m-r-sm text-muted welcome-message">Hoş geldiniz, @User.GetFullName()</span>
+            </li>
+            <li class="oys-topbar__logout">
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="btn btn-link nav-link">Çıkış</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+</header>

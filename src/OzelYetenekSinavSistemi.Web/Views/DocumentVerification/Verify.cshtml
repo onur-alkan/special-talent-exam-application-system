@@ -1,0 +1,44 @@
+@model OzelYetenekSinavSistemi.Application.ViewModels.Documents.DocumentVerificationResultViewModel
+@using OzelYetenekSinavSistemi.Application.Services
+@{
+    ViewData["Title"] = "Belge Doğrulama";
+    Layout = "_AuthLayout";
+    ViewData["HideOfficialAuthLogo"] = true;
+}
+
+<div class="card site-text-left">
+    <div class="card-body text-center">
+        <partial name="_OfficialUniversityLogo" model='"site-verification-official-logo"' />
+        @if (Model.IsValid)
+        {
+            <p class="text-primary fw-semibold mb-1" role="img" aria-label="Belge geçerli">Geçerli</p>
+            <h1 class="h2 text-primary mt-2">Belge Geçerli</h1>
+            <hr />
+            <dl class="row text-start">
+                <dt class="col-5">Sınav / Başvuru</dt>
+                <dd class="col-7">@Model.ExamTitle</dd>
+                <dt class="col-5">Aday Numarası</dt>
+                <dd class="col-7">@Model.CandidateNo</dd>
+                <dt class="col-5">Aday</dt>
+                <dd class="col-7">@Model.MaskedCandidateName</dd>
+                <dt class="col-5">Doğrulama Kodu</dt>
+                <dd class="col-7"><code>@Model.VerificationCode</code></dd>
+            </dl>
+        }
+        else if (Model.IsNotYetAvailable)
+        {
+            <p class="text-warning fw-semibold mb-1" role="status">Beklemede</p>
+            <h1 class="h2 text-warning mt-2">@ExamEntranceDocumentAccess.VerificationNotYetAvailableMessage</h1>
+            <p class="text-muted">Belge doğrulama, başvuru süresi sona erdikten sonra kullanılabilir.</p>
+        }
+        else
+        {
+            <p class="text-danger fw-semibold mb-1" role="status">Geçersiz</p>
+            <h1 class="h2 text-danger mt-2">Belge Geçersiz</h1>
+            <p class="text-muted">Girilen doğrulama koduna ait geçerli bir belge bulunamadı.</p>
+        }
+        <div class="mt-3">
+            <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
+        </div>
+    </div>
+</div>

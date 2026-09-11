@@ -1,0 +1,48 @@
+@model OzelYetenekSinavSistemi.Application.ViewModels.UserManagement.EditStaffUserViewModel
+
+<div class="card">
+    <div class="card-header"><h1 class="h5 mb-0">Personel Düzenle</h1></div>
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="IsSelf" />
+
+            <dl class="row">
+                <dt class="col-sm-3">Ad Soyad</dt><dd class="col-sm-9">@Model.FullName</dd>
+                <dt class="col-sm-3">T.C.</dt><dd class="col-sm-9">@Model.MaskedTcNo</dd>
+                <dt class="col-sm-3">E-posta</dt><dd class="col-sm-9">@Model.MaskedEmail</dd>
+            </dl>
+
+            @if (Model.IsSelf)
+            {
+                <div class="alert alert-info">
+                    Kendi hesabınızda rol düşürme veya pasifleştirme yapılamaz.
+                </div>
+                <input type="hidden" asp-for="RoleId" />
+                <input type="hidden" asp-for="IsActive" />
+                <p><strong>Rol:</strong> @(Model.RoleId == OzelYetenekSinavSistemi.Domain.Common.DomainConstants.RoleIds.SuperAdmin ? "SuperAdmin" : "ApplicationManager")</p>
+                <p><strong>Durum:</strong> @(Model.IsActive ? "Aktif" : "Pasif")</p>
+            }
+            else
+            {
+                <div class="mb-3">
+                    <label asp-for="RoleId" class="form-label"></label>
+                    <select asp-for="RoleId" class="form-control" asp-items="ViewBag.Roles"></select>
+                    <span asp-validation-for="RoleId" class="text-danger small"></span>
+                </div>
+                <div class="mb-3 form-check">
+                    <input asp-for="IsActive" type="checkbox" class="form-check-input" />
+                    <label asp-for="IsActive" class="form-check-label">@Html.DisplayNameFor(m => m.IsActive)</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            }
+
+            <a asp-action="Index" class="btn btn-outline-secondary">Listeye Dön</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

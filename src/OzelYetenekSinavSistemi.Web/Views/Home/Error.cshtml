@@ -1,0 +1,20 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Sistem Hatası";
+    Layout = "_AuthLayout";
+}
+
+<div class="text-center">
+    <h1 class="logo-name site-status-code-danger">500</h1>
+    <h3 class="font-bold">Beklenmeyen Bir Hata Oluştu</h3>
+    <div class="error-desc">
+        İşleminiz sırasında bir hata meydana geldi. Lütfen daha sonra tekrar deneyiniz.
+        @if (Model?.ShowRequestId ?? false)
+        {
+            <div class="small text-muted m-t">İstek No: <code>@Model!.RequestId</code></div>
+        }
+    </div>
+    <div class="m-t">
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Ana Sayfaya Dön</a>
+    </div>
+</div>

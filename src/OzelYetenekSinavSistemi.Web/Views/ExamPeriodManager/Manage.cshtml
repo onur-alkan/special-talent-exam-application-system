@@ -1,0 +1,70 @@
+@using OzelYetenekSinavSistemi.Domain.Entities
+@{
+    var exam = ViewBag.ExamPeriod as ExamPeriod;
+    var assigned = ViewBag.AssignedManagers as IReadOnlyList<ExamPeriodManager> ?? new List<ExamPeriodManager>();
+    var assignable = ViewBag.AssignableManagers as IReadOnlyList<User> ?? new List<User>();
+    var assignedIds = assigned.Select(a => a.ManagerUserId).ToHashSet();
+}
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card mb-3">
+            <div class="card-header"><h5 class="mb-0">Atanmış Yöneticiler - @exam?.Title</h5></div>
+            <div class="card-body">
+                @if (assigned.Count == 0)
+                {
+                    <p class="text-muted mb-0">Bu sınav dönemine atanmış yönetici yok.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead><tr><th>Yönetici</th><th>Atanma Tarihi</th><th></th></tr></thead>
+                            <tbody>
+                                @foreach (var m in assigned)
+                                {
+                                    var user = assignable.FirstOrDefault(u => u.Id == m.ManagerUserId);
+                                    <tr>
+                                        <td>@(user is null ? m.ManagerUserId.ToString() : $"{user.FullName} ({user.Email})")</td>
+                                        <td>@m.AssignedDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td class="text-end">
+                                            <form asp-action="Remove" method="post" data-confirm="Yönetici atamasını kaldırmak istediğinize emin misiniz?">
+                                                <input type="hidden" name="examPeriodId" value="@exam?.Id" />
+                                                <input type="hidden" name="managerUserId" value="@m.ManagerUserId" />
+                                                <button type="submit" class="btn btn-sm btn-danger">Kaldır</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card mb-3">
+            <div class="card-header"><h5 class="mb-0">Yönetici Ata</h5></div>
+            <div class="card-body">
+                <form asp-action="Assign" method="post">
+                    <input type="hidden" name="examPeriodId" value="@exam?.Id" />
+                    <div class="mb-3">
+                        <label for="managerUserId" class="form-label">Yönetici (ApplicationManager)</label>
+                        <select id="managerUserId" name="managerUserId" class="form-select select2-manager js-select2" required>
+                            <option value="">-- Seçiniz --</option>
+                            @foreach (var u in assignable.Where(u => !assignedIds.Contains(u.Id)))
+                            {
+                                <option value="@u.Id">@u.FullName (@u.Email)</option>
+                            }
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Ata</button>
+                    <a asp-action="Index" class="btn btn-secondary">Geri</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Select2: site.js .js-select2 / .select2-manager *@

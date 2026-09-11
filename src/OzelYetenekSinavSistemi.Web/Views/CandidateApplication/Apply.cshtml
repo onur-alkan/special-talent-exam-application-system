@@ -1,0 +1,155 @@
+@model OzelYetenekSinavSistemi.Application.DTOs.Applications.ApplicationFormData
+@{
+    Layout = "_CandidateLayout";
+    var exam = Model.ExamPeriod;
+    var selected = Model.ExistingSelectedOptionIds;
+    var selectedSet = selected.ToHashSet();
+    var optionNames = Model.Options.ToDictionary(o => o.Id, o => o.PreferenceName);
+    var isEdit = Model.AlreadyApplied;
+    var formAction = isEdit ? "Edit" : "Apply";
+    var submitLabel = isEdit ? "Tercihlerimi Güncelle" : "Başvuruyu Kaydet";
+    var loadingLabel = isEdit ? "Güncelleniyor..." : "Kaydediliyor...";
+    var maxPreferences = exam.MaxPreferences;
+}
+
+<div class="card">
+    <div class="card-header">
+        <h1 class="h5 mb-0">@exam.Title</h1>
+    </div>
+    <div class="card-body">
+        <p class="text-muted">@exam.Description</p>
+        <p class="small">
+            <span class="badge text-bg-primary">Maksimum @maxPreferences tercih</span>
+            <span class="text-muted">Başvuru süresi: @exam.StartDate.ToString("dd.MM.yyyy") - @exam.EndDate.ToString("dd.MM.yyyy")</span>
+        </p>
+
+        @if (isEdit)
+        {
+            <div class="alert alert-info">Bu sınav dönemine daha önce başvurdunuz. Tercihlerinizi güncelleyebilirsiniz.</div>
+        }
+
+        <form asp-action="@formAction"
+              asp-route-id="@(isEdit ? Model.ExistingApplicationId : null)"
+              method="post"
+              data-oys-single-submit
+              data-oys-preference-form
+              data-oys-loading-status="@loadingLabel"
+              data-max-preferences="@maxPreferences"
+              novalidate>
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="ExamPeriodId" value="@exam.Id" />
+
+            <div class="mb-3">
+                <h2 class="h4">Tercihleriniz</h2>
+                <p class="text-muted mb-2">
+                    En fazla @maxPreferences tercih seçebilirsiniz.
+                    Seçim sıranız tercih sıranızı belirler. Tercih sırasını aşağıdaki listeden değiştirebilirsiniz.
+                </p>
+
+                <div class="oys-preference-options" role="group" aria-label="Uygun tercihler">
+                    @foreach (var option in Model.Options)
+                    {
+                        var inputId = $"pref-option-{option.Id:N}";
+                        var isChecked = selectedSet.Contains(option.Id);
+                        <div class="oys-preference-option">
+                            <div class="checkbox me-2 mb-2">
+                                <label for="@inputId" class="oys-preference-option-label">
+                                    <input type="checkbox"
+                                           id="@inputId"
+                                           class="oys-preference-checkbox"
+                                           value="@option.Id"
+                                           data-oys-preference-option
+                                           data-preference-id="@option.Id"
+                                           data-preference-name="@option.PreferenceName"
+                                           @(isChecked ? "checked=\"checked\"" : null) />
+                                    <span>@option.PreferenceName</span>
+                                </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="text-danger small mb-2"
+                     data-oys-preference-error
+                     role="alert"
+                     aria-live="polite"></div>
+            </div>
+
+            <div class="oys-preference-selected card mb-3"
+                 data-oys-preference-selected
+                 aria-labelledby="oys-preference-selected-heading">
+                <div class="card-header py-2">
+                    <h2 id="oys-preference-selected-heading" class="h6 mb-0">Seçilen Tercihler</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-0" data-oys-preference-empty @(selected.Count > 0 ? "hidden" : null)>
+                        Henüz tercih seçmediniz.
+                    </p>
+                    <ol class="oys-preference-selected-list list-unstyled mb-0"
+                        data-oys-preference-list
+                        @(selected.Count == 0 ? "hidden" : null)>
+                        @for (var i = 0; i < selected.Count; i++)
+                        {
+                            var optionId = selected[i];
+                            if (!optionNames.TryGetValue(optionId, out var preferenceName))
+                            {
+                                continue;
+                            }
+                            <li class="oys-preference-selected-item"
+                                data-oys-preference-item
+                                data-preference-id="@optionId"
+                                data-preference-name="@preferenceName">
+                                <div class="oys-preference-selected-row">
+                                    <div class="oys-preference-selected-copy">
+                                        <strong><span data-oys-preference-rank>@(i + 1)</span>. Tercihiniz</strong>
+                                        <div data-oys-preference-name>@preferenceName</div>
+                                    </div>
+                                    <div class="oys-preference-selected-actions btn-group">
+                                        <button type="button"
+                                                class="btn btn-outline-secondary btn-sm"
+                                                data-oys-preference-move-up
+                                                @(i == 0 ? "disabled" : null)>
+                                            Yukarı Taşı
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-outline-secondary btn-sm"
+                                                data-oys-preference-move-down
+                                                @(i == selected.Count - 1 ? "disabled" : null)>
+                                            Aşağı Taşı
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-outline-secondary btn-sm"
+                                                data-oys-preference-remove>
+                                            Kaldır
+                                        </button>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ol>
+                </div>
+            </div>
+
+            <div class="sr-only" aria-live="polite" aria-atomic="true" data-oys-preference-live></div>
+
+            <div data-oys-preference-hidden>
+                @foreach (var optionId in selected)
+                {
+                    <input type="hidden" name="SelectedPreferenceOptionIds" value="@optionId" />
+                }
+            </div>
+
+            <div class="mb-0 mt-3">
+                <button type="submit"
+                        class="btn btn-primary"
+                        data-oys-submit-button
+                        data-oys-loading-label="@loadingLabel">
+                    <span class="oys-submit-spinner" hidden aria-hidden="true"></span>
+                    <span class="oys-submit-label">@submitLabel</span>
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Vazgeç</a>
+                <p class="text-muted small mt-2" data-oys-submit-status aria-live="polite" aria-atomic="true"></p>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,110 @@
+@model OzelYetenekSinavSistemi.Application.ViewModels.ExamResults.ExamResultFormViewModel
+@using OzelYetenekSinavSistemi.Domain.Enums
+@using OzelYetenekSinavSistemi.Domain.Extensions
+@using OzelYetenekSinavSistemi.Application.DTOs.Applications
+@using OzelYetenekSinavSistemi.Application.Common
+@{
+    var candidate = ViewBag.Candidate as CandidateApplicationDetail;
+    var candidateIdentity = ViewBag.CandidateIdentity as IdentityDisplayInfo;
+}
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-header"><h1 class="h5 mb-0">Aday Bilgisi</h1></div>
+            <div class="card-body">
+                @if (candidate is not null)
+                {
+                    <dl class="mb-0">
+                        <dt>Aday No</dt><dd><p class="h3 text-primary mb-0">@candidate.CandidateNo</p></dd>
+                        <dt>Ad Soyad</dt><dd>@candidate.FullName</dd>
+                        <dt>Doğum Tarihi</dt>
+                        <dd>@(candidate.BirthDate?.ToString("dd.MM.yyyy")
+                            ?? candidate.BirthYear?.ToString()
+                            ?? "Belirtilmemiş")</dd>
+                        <dt>Sınav</dt><dd>@candidate.ExamTitle</dd>
+                        <dt>Tercihler</dt>
+                        <dd>
+                            <ol class="mb-0 ps-3">
+                                @foreach (var p in candidate.Preferences) { <li>@p</li> }
+                            </ol>
+                        </dd>
+                    </dl>
+                    @if (candidateIdentity is not null)
+                    {
+                        <hr />
+                        <h2 class="h5">Kimlik ve Uyruk Bilgileri</h2>
+                        <dl class="mb-0">
+                            <dt>Kimlik Belgesi Türü</dt>
+                            <dd>@candidateIdentity.IdentityDocumentTypeDisplayName</dd>
+                            <dt>@candidateIdentity.IdentityNumberLabel</dt>
+                            <dd>@candidateIdentity.DisplayIdentityNumber</dd>
+                            <dt>Uyruk</dt>
+                            <dd>@candidateIdentity.NationalityDisplayName</dd>
+                            @if (!string.IsNullOrEmpty(candidateIdentity.IssuingCountryDisplayName) && candidateIdentity.IssuingCountryDisplayName != "-")
+                            {
+                                <dt>Pasaportu Düzenleyen Ülke</dt>
+                                <dd>@candidateIdentity.IssuingCountryDisplayName</dd>
+                            }
+                            @if (!string.IsNullOrEmpty(candidateIdentity.PassportExpiryDateDisplay) && candidateIdentity.PassportExpiryDateDisplay != "-")
+                            {
+                                <dt>Pasaport Son Geçerlilik Tarihi</dt>
+                                <dd>@candidateIdentity.PassportExpiryDateDisplay</dd>
+                            }
+                        </dl>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card h-100">
+            <div class="card-header"><h2 class="h5 mb-0">Değerlendirme</h2></div>
+            <div class="card-body">
+                <form asp-action="Save" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="ApplicationId" />
+                    <input type="hidden" asp-for="ExpectedUpdatedDate" />
+                    <input type="hidden" name="examPeriodId" value="@candidate?.ExamPeriodId" />
+
+                    <div class="mb-3">
+                        <label asp-for="AttendanceStatus" class="form-label"></label>
+                        <select asp-for="AttendanceStatus" class="form-control" id="attendanceStatus"
+                                data-attended-value="@((int)AttendanceStatus.Attended)">
+                            <option value="@((int)AttendanceStatus.Attended)">@AttendanceStatus.Attended.ToDisplayText()</option>
+                            <option value="@((int)AttendanceStatus.NotAttended)">@AttendanceStatus.NotAttended.ToDisplayText()</option>
+                            <option value="@((int)AttendanceStatus.Cancelled)">@AttendanceStatus.Cancelled.ToDisplayText()</option>
+                            <option value="@((int)AttendanceStatus.Disqualified)">@AttendanceStatus.Disqualified.ToDisplayText()</option>
+                        </select>
+                        <span asp-validation-for="AttendanceStatus" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ExamScore" class="form-label"></label>
+                        <input asp-for="ExamScore" class="form-control" type="number" step="0.01" min="0" max="100" />
+                        <span asp-validation-for="ExamScore" class="text-danger small"></span>
+                        <small class="text-muted">Girmedi, iptal veya diskalifiye durumundaki adaylar için boş bırakınız.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="AdminDescription" class="form-label"></label>
+                        <textarea asp-for="AdminDescription" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="AdminDescription" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="IsDescriptionVisibleToCandidate" type="checkbox" class="form-check-input" />
+                        <label asp-for="IsDescriptionVisibleToCandidate" class="form-check-label">@Html.DisplayNameFor(m => m.IsDescriptionVisibleToCandidate)</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                    <a asp-action="List" asp-route-examPeriodId="@candidate?.ExamPeriodId" class="btn btn-outline-secondary">Listeye Dön</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

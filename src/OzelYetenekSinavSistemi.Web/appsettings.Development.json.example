@@ -1,0 +1,34 @@
+{
+  "//": "Bu dosyayı appsettings.Development.json olarak kopyalayın. Gerçek parola/secret EKLEMEYİN.",
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug",
+      "Microsoft.AspNetCore": "Information"
+    }
+  },
+  "AllowedHosts": "localhost;127.0.0.1",
+  "PublicUrl": {
+    "BaseUrl": "https://localhost:7102"
+  },
+  "ReverseProxy": {
+    "Enabled": false,
+    "ForwardLimit": 1,
+    "RequireHeaderSymmetry": true,
+    "KnownProxies": [],
+    "KnownNetworks": []
+  },
+  "ConnectionStrings": {
+    "//": "Yalnızca yerel geliştirme için Windows Authentication bağlantısı.",
+    "DefaultConnection": "Server=.\\SQLEXPRESS;Database=OzelYetenekSinavSistemi;Trusted_Connection=True;TrustServerCertificate=True;"
+  },
+  "Email": {
+    "DeliveryMode": "File",
+    "DevPickupDirectory": "App_Data/dev-emails",
+    "FromAddress": "no-reply@example.com",
+    "FromName": "Özel Yetenek Sınavları Başvuru Sistemi"
+  },
+  "Seed": {
+    "//": "SuperAdmin parolası User Secrets ile verilir: dotnet user-secrets set \"Seed:SuperAdminPassword\" \"...\"",
+    "SeedTestData": true
+  }
+}

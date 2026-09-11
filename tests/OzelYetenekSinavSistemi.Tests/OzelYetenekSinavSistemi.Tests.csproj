@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.11" />
+    <PackageReference Include="coverlet.collector" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="Moq" Version="4.20.70" />
+    <!-- 2.6.6+: NETStandard.Library 1.6.1 / System.Net.Http 4.3.0 / System.Text.RegularExpressions 4.3.0 kaldırıldı -->
+    <PackageReference Include="xunit" Version="2.6.6" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\OzelYetenekSinavSistemi.Application\OzelYetenekSinavSistemi.Application.csproj" />
+    <ProjectReference Include="..\..\src\OzelYetenekSinavSistemi.Infrastructure\OzelYetenekSinavSistemi.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\OzelYetenekSinavSistemi.Domain\OzelYetenekSinavSistemi.Domain.csproj" />
+    <ProjectReference Include="..\..\src\OzelYetenekSinavSistemi.Web\OzelYetenekSinavSistemi.Web.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,69 @@
+@using OzelYetenekSinavSistemi.Domain.Entities
+@{
+    var exams = ViewBag.Exams as IReadOnlyList<ExamPeriod> ?? new List<ExamPeriod>();
+}
+
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header"><h5 class="mb-0">Toplam Sınav Dönemi</h5></div>
+            <div class="card-body text-center"><h1 class="text-primary">@ViewBag.TotalExams</h1></div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header"><h5 class="mb-0">Aktif Sınav Dönemi</h5></div>
+            <div class="card-body text-center"><h1 class="text-primary">@ViewBag.ActiveExams</h1></div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header"><h5 class="mb-0">Kapatılmış Dönem</h5></div>
+            <div class="card-body text-center"><h1 class="text-muted">@ViewBag.ClosedExams</h1></div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Sınav Dönemleri</h5>
+                <div>
+                    <a asp-controller="ExamPeriod" asp-action="Index" class="btn btn-outline-secondary btn-sm">Tümünü Gör</a>
+                </div>
+            </div>
+            <div class="card-body">
+                @if (exams.Count == 0)
+                {
+                    <p class="text-muted">Görüntülenecek sınav dönemi bulunmuyor.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead><tr><th>Başlık</th><th>Tarih Aralığı</th><th>Durum</th><th></th></tr></thead>
+                            <tbody>
+                                @foreach (var e in exams)
+                                {
+                                    <tr>
+                                        <td>@e.Title</td>
+                                        <td>@e.StartDate.ToString("dd.MM.yyyy") - @e.EndDate.ToString("dd.MM.yyyy")</td>
+                                        <td>
+                                            @if (e.IsClosed) { <span class="badge text-bg-danger">Kapalı</span> }
+                                            else if (e.IsActive) { <span class="badge text-bg-primary">Aktif</span> }
+                                            else { <span class="badge text-bg-secondary">Pasif</span> }
+                                        </td>
+                                        <td class="text-end">
+                                            <a asp-controller="ExamPeriod" asp-action="Details" asp-route-id="@e.Id" class="btn btn-sm btn-outline-secondary">Detay</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

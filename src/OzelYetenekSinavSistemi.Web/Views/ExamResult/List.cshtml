@@ -1,0 +1,66 @@
+@model IReadOnlyList<OzelYetenekSinavSistemi.Application.DTOs.Applications.CandidateApplicationDetail>
+@using System.Globalization
+@using OzelYetenekSinavSistemi.Application.Common
+@using OzelYetenekSinavSistemi.Domain.Entities
+@using OzelYetenekSinavSistemi.Domain.Enums
+@using OzelYetenekSinavSistemi.Domain.Extensions
+@{
+    var exam = ViewBag.ExamPeriod as ExamPeriod;
+    static string AttendanceBadgeClass(AttendanceStatus? status) => status switch
+    {
+        AttendanceStatus.Attended => "text-bg-success",
+        AttendanceStatus.NotAttended => "text-bg-warning",
+        AttendanceStatus.Cancelled => "text-bg-danger",
+        AttendanceStatus.Disqualified => "text-bg-dark",
+        _ => "text-bg-secondary"
+    };
+}
+
+<div class="card">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <h5 class="mb-0">Sınav Sonuçları - @exam?.Title</h5>
+        <div>
+            <a asp-action="ExportExcel" asp-route-examPeriodId="@exam?.Id" class="btn btn-secondary btn-sm">Excel</a>
+            <a asp-action="ExportPdf" asp-route-examPeriodId="@exam?.Id" class="btn btn-secondary btn-sm">PDF</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            @* Col 0 Aday No, 1 Ad Soyad, 2 Katılım, 3 Puan, 4 İşlem — varsayılan: puan DESC, aday no ASC *@
+            <table class="table table-striped table-bordered table-hover align-middle dataTable js-datatable"
+                   data-page-length="25"
+                   data-order-col="3"
+                   data-order-dir="desc"
+                   data-secondary-order-col="0"
+                   data-oys-buttons="copy,csv,excel,pdf,print"
+                   data-export-columns="0,1,2,3"
+                   data-export-title="Sinav-Sonuclari">
+                <thead>
+                    <tr>
+                        <th>Aday No</th>
+                        <th>Ad Soyad</th>
+                        <th>Katılım</th>
+                        <th>Puan</th>
+                        <th class="no-export">İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model)
+                    {
+                        <tr>
+                            <td>@c.CandidateNo</td>
+                            <td>@c.FullName</td>
+                            <td><span class="badge @AttendanceBadgeClass(c.AttendanceStatus)">@c.AttendanceStatus.ToDisplayText()</span></td>
+                            <td data-order="@CandidateResultOrdering.ToDataTablesOrderValue(c.ExamScore)">@(c.ExamScore.HasValue ? c.ExamScore.Value.ToString("0.##", CultureInfo.GetCultureInfo("tr-TR")) : "-")</td>
+                            <td class="text-end no-export">
+                                <a asp-action="Evaluate" asp-route-id="@c.ApplicationId" class="btn btn-sm btn-primary">Değerlendir</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@* DataTables: site.js .js-datatable *@

@@ -1,0 +1,274 @@
+@model ProfileViewModel
+@using OzelYetenekSinavSistemi.Application.Common
+@using OzelYetenekSinavSistemi.Domain.Entities
+@{
+    Layout = "_CandidateLayout";
+    var ygsYears = ViewBag.YgsYears as IReadOnlyList<YgsYear> ?? new List<YgsYear>();
+    var photoError = ViewData.ModelState["Photo"]?.Errors.FirstOrDefault()?.ErrorMessage
+        ?? ViewData.ModelState["photo"]?.Errors.FirstOrDefault()?.ErrorMessage;
+    var photoHasError = !string.IsNullOrEmpty(photoError);
+}
+
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card mb-3">
+            <div class="card-body text-center">
+                @if (!string.IsNullOrWhiteSpace(Model.PhotoPath))
+                {
+                    <img class="img-fluid rounded site-photo-max-200"
+                         src="@Url.Action("Profile", "CandidatePhoto", new { v = Model.PhotoCacheVersion })"
+                         alt="Fotoğraf" />
+                }
+                else
+                {
+                    <div class="text-muted p-4"><p class="mb-0">Fotoğraf yüklenmemiş</p></div>
+                }
+                <h3 class="h5 mt-3">@Model.FirstName @Model.LastName</h3>
+                <p class="text-muted mb-0">@Model.Email</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card mb-3">
+            <div class="card-header"><h5 class="mb-0">Kimlik ve Uyruk Bilgileri</h5></div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Kimlik Belgesi Türü</dt>
+                    <dd class="col-sm-7">@Model.Identity.DocumentTypeDisplay</dd>
+
+                    <dt class="col-sm-5">@Model.Identity.IdentityNumberLabel</dt>
+                    <dd class="col-sm-7">@Model.Identity.IdentityNumber</dd>
+
+                    <dt class="col-sm-5">@Model.Identity.NationalityLabel</dt>
+                    <dd class="col-sm-7">@Model.Identity.NationalityDisplay</dd>
+
+                    @if (!string.IsNullOrEmpty(Model.Identity.IssuingCountryLabel))
+                    {
+                        <dt class="col-sm-5">@Model.Identity.IssuingCountryLabel</dt>
+                        <dd class="col-sm-7">@Model.Identity.IssuingCountryDisplay</dd>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.Identity.PassportExpiryLabel))
+                    {
+                        <dt class="col-sm-5">@Model.Identity.PassportExpiryLabel</dt>
+                        <dd class="col-sm-7">@Model.Identity.PassportExpiryDisplay</dd>
+                    }
+                </dl>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header"><h5 class="mb-0">Profil Bilgileri</h5></div>
+            <div class="card-body">
+                <form asp-action="Index" method="post" enctype="multipart/form-data" data-oys-single-submit>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="BirthDateDisplay" class="form-label">@Model.BirthDateLabel</label>
+                            <input id="BirthDateDisplay"
+                                   class="form-control"
+                                   value="@Model.BirthDateDisplay"
+                                   readonly
+                                   disabled />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="FirstName" class="form-label"></label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="LastName" class="form-label"></label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="HighSchool" class="form-label"></label>
+                            <input asp-for="HighSchool" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DepartmentField" class="form-label"></label>
+                            <input asp-for="DepartmentField" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="YgsScore" class="form-label"></label>
+                            <input asp-for="YgsScore" class="form-control" type="number" step="0.001" />
+                            <span asp-validation-for="YgsScore" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="YgsYearId" class="form-label"></label>
+                            <select asp-for="YgsYearId" class="form-select select2-years">
+                                <option value="">-- YGS Yılı --</option>
+                                @foreach (var year in ygsYears)
+                                {
+                                    <option value="@year.Id">@year.Year</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Phone" class="form-label"></label>
+                            <input asp-for="Phone"
+                                   class="form-control"
+                                   type="tel"
+                                   inputmode="tel"
+                                   autocomplete="tel"
+                                   maxlength="20"
+                                   placeholder="05XX XXX XX XX" />
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Address" class="form-label"></label>
+                        <textarea asp-for="Address" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input asp-for="HasDisability"
+                               type="checkbox"
+                               class="form-check-input js-disability-toggle"
+                               data-disability-container="#disability-description-container"
+                               data-disability-field="#DisabilityDetails" />
+                        <label asp-for="HasDisability" class="form-check-label">@Html.DisplayNameFor(m => m.HasDisability)</label>
+                    </div>
+                    <div class="mb-3"
+                         id="disability-description-container"
+                         data-disability-description-container
+                         aria-hidden="@(Model.HasDisability ? "false" : "true")"
+                         hidden="@(Model.HasDisability ? null : "hidden")">
+                        <label asp-for="DisabilityDetails" class="form-label"></label>
+                        <textarea asp-for="DisabilityDetails"
+                                  class="form-control"
+                                  rows="2"
+                                  disabled="@(Model.HasDisability ? null : "disabled")"></textarea>
+                        <span asp-validation-for="DisabilityDetails" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3 oys-photo-upload" data-oys-photo-upload>
+                        <label for="Photo" class="form-label">Vesikalık Fotoğraf</label>
+                        <p class="text-muted small m-b-xs">@PhotoUploadMessages.ProfileKeepHint</p>
+                        <div class="oys-photo-controls">
+                            <input type="file"
+                                   id="Photo"
+                                   name="Photo"
+                                   class="oys-photo-input"
+                                   accept="@PhotoUploadLimits.AcceptAttribute"
+                                   data-oys-photo-input
+                                   data-oys-photo-max-bytes="@PhotoUploadLimits.MaxFileBytes"
+                                   aria-describedby="photo-help photo-selected photo-validation"
+                                   aria-invalid="@(photoHasError ? "true" : "false")" />
+                            <button type="button"
+                                    class="btn btn-secondary btn-sm oys-photo-pick"
+                                    data-oys-photo-pick>
+                                Fotoğraf Seç
+                            </button>
+                            <span id="photo-selected"
+                                  class="oys-photo-status"
+                                  data-oys-photo-status
+                                  aria-live="polite">Fotoğraf seçilmedi</span>
+                        </div>
+                        <div class="oys-photo-preview-wrap" data-oys-photo-preview-wrap hidden>
+                            <p class="small m-b-xs"><strong>Yeni Fotoğraf Önizlemesi</strong></p>
+                            <p class="oys-photo-preview-loading text-muted small"
+                               data-oys-photo-preview-loading
+                               hidden>Önizleme yükleniyor…</p>
+                            <img class="oys-photo-preview"
+                                 data-oys-photo-preview
+                                 alt="Seçilen vesikalık fotoğraf önizlemesi"
+                                 hidden />
+                        </div>
+                        <small id="photo-help" class="form-text text-muted">
+                            Son 6 ay içinde çekilmiş, önden, adayı kolaylıkla tanıtan JPG, JPEG veya PNG fotoğraf yükleyiniz. Dosya boyutu en fazla @PhotoUploadLimits.MaxFileSizeDisplay olabilir.
+                        </small>
+                        <span class="text-danger small @(photoHasError ? "field-validation-error" : "field-validation-valid")"
+                              id="photo-validation"
+                              data-oys-photo-validation>@photoError</span>
+                        <p class="text-muted small m-t-xs">@PhotoUploadMessages.ProfileReselectHint</p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" data-oys-submit-button>
+                        <span class="oys-submit-spinner" hidden aria-hidden="true"></span>
+                        <span class="oys-submit-label">Bilgileri Güncelle</span>
+                    </button>
+                    <p class="text-muted small mt-2" data-oys-submit-status aria-live="polite" aria-atomic="true"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .oys-photo-upload .oys-photo-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem 0.75rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .oys-photo-upload .oys-photo-input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .oys-photo-upload .oys-photo-status {
+            color: #676a6c;
+            font-size: 13px;
+        }
+
+        .oys-photo-upload .oys-photo-preview-wrap {
+            margin: 0.5rem 0;
+            min-height: 1.25rem;
+        }
+
+        .oys-photo-upload .oys-photo-preview-loading {
+            margin: 0 0 0.35rem;
+        }
+
+        .oys-photo-upload .oys-photo-preview {
+            display: block;
+            max-width: 120px;
+            max-height: 120px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border: 1px solid #e5e6e7;
+            background: #f8f8f8;
+        }
+
+        .oys-photo-upload .oys-photo-preview[hidden] {
+            display: none !important;
+        }
+
+        .oys-photo-upload .m-t-xs {
+            margin-top: 0.35rem;
+        }
+
+        .oys-photo-upload .m-b-xs {
+            margin-bottom: 0.35rem;
+        }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

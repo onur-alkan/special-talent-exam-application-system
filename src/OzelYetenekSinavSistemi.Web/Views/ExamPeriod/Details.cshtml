@@ -1,0 +1,92 @@
+@model OzelYetenekSinavSistemi.Domain.Entities.ExamPeriod
+@using OzelYetenekSinavSistemi.Domain.Entities
+@using OzelYetenekSinavSistemi.Domain.Common
+@{
+    var options = ViewBag.Options as IReadOnlyList<ExamPreferenceOption> ?? new List<ExamPreferenceOption>();
+    var isSuperAdmin = User.IsInRole(DomainConstants.RoleNames.SuperAdmin);
+}
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="card mb-3">
+            <div class="card-header"><h1 class="h5 mb-0">@Model.Title</h1></div>
+            <div class="card-body">
+                <p>@Model.Description</p>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Başlangıç</dt><dd class="col-sm-8">@Model.StartDate.ToString("dd.MM.yyyy HH:mm")</dd>
+                    <dt class="col-sm-4">Bitiş</dt><dd class="col-sm-8">@Model.EndDate.ToString("dd.MM.yyyy HH:mm")</dd>
+                    <dt class="col-sm-4">Maksimum Tercih</dt><dd class="col-sm-8">@Model.MaxPreferences</dd>
+                    <dt class="col-sm-4">Durum</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.IsClosed) { <span class="badge text-bg-danger">Kapalı</span> }
+                        else if (Model.IsActive) { <span class="badge text-bg-primary">Aktif</span> }
+                        else { <span class="badge text-bg-secondary">Pasif</span> }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">Tercih Seçenekleri</h2>
+                @if (isSuperAdmin)
+                {
+                    <a asp-controller="ExamPreferenceOption" asp-action="Manage" asp-route-examPeriodId="@Model.Id" class="btn btn-outline-secondary btn-sm">Yönet</a>
+                }
+            </div>
+            <div class="card-body">
+                @if (options.Count == 0)
+                {
+                    <p class="text-muted mb-0">Henüz tercih seçeneği tanımlanmamış.</p>
+                }
+                else
+                {
+                    <ol class="mb-0">
+                        @foreach (var o in options.OrderBy(x => x.DisplayOrder))
+                        {
+                            <li>@o.PreferenceName @(o.IsActive ? "" : "(pasif)")</li>
+                        }
+                    </ol>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header"><h2 class="h5 mb-0">İşlemler</h2></div>
+            <div class="card-body d-grid gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-info">Düzenle</a>
+                <a asp-controller="CandidateManagement" asp-action="List" asp-route-examPeriodId="@Model.Id" class="btn btn-outline-secondary">Adaylar</a>
+                <a asp-controller="ExamResult" asp-action="List" asp-route-examPeriodId="@Model.Id" class="btn btn-outline-secondary">Sonuçlar</a>
+
+                @if (isSuperAdmin)
+                {
+                    <hr class="my-1" />
+                    <a asp-controller="ExamPeriodManager" asp-action="Manage" asp-route-examPeriodId="@Model.Id" class="btn btn-outline-secondary">Yönetici Ata</a>
+
+                    <form asp-action="SetActive" method="post" class="mt-2">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <input type="hidden" name="isActive" value="@((!Model.IsActive).ToString().ToLower())" />
+                        <button type="submit" class="btn btn-warning w-100">
+                            @(Model.IsActive ? "Pasif Yap" : "Aktif Yap")
+                        </button>
+                    </form>
+
+                    @if (!Model.IsClosed)
+                    {
+                        <form asp-action="Close" method="post" data-confirm="Sınav dönemini kapatmak istediğinize emin misiniz? Bu işlem başvuruları durdurur.">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <button type="submit" class="btn btn-danger w-100">Sınav Dönemini Kapat</button>
+                        </form>
+                    }
+
+                    <form asp-action="Delete" method="post" data-confirm="Sınav dönemini silmek istediğinize emin misiniz?">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <button type="submit" class="btn btn-outline-danger w-100">Sil</button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>

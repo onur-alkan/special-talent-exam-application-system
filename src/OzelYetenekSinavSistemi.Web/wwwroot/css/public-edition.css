@@ -1,0 +1,81 @@
+/* Public Edition shell — Bootstrap 5 layout helpers only. */
+
+:root {
+  --pe-sidebar-width: 260px;
+  --pe-surface: #f7f8fa;
+  --pe-border: #dee2e6;
+  --pe-nav-active: #0d6efd;
+}
+
+body.pe-app {
+  background-color: var(--pe-surface);
+  min-height: 100vh;
+}
+
+.pe-shell {
+  min-height: 100vh;
+}
+
+.pe-sidebar-panel {
+  width: var(--pe-sidebar-width);
+  max-width: 100%;
+  background: #fff;
+}
+
+@media (min-width: 992px) {
+  .pe-sidebar-panel.offcanvas-lg {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    visibility: visible !important;
+    transform: none !important;
+  }
+}
+
+.pe-side-nav__list .nav-link {
+  color: #212529;
+  border-radius: 0.375rem;
+  padding: 0.55rem 0.75rem;
+}
+
+.pe-side-nav__list .nav-link.active,
+.pe-side-nav__list .nav-item.active > .nav-link {
+  color: #fff;
+  background-color: var(--pe-nav-active);
+}
+
+.pe-side-nav .logo-element {
+  display: none;
+}
+
+.pe-main {
+  min-width: 0;
+}
+
+.pe-content {
+  max-width: 100%;
+}
+
+.pe-footer {
+  background: #fff;
+}
+
+body.pe-auth,
+body.site-auth-page {
+  background-color: var(--pe-surface);
+  min-height: 100vh;
+}
+
+.pe-auth-product-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #212529;
+}
+
+.pe-auth-main .site-auth-box {
+  max-width: 480px;
+}
+
+.oys-topbar__toggle.minimalize-styl-2 {
+  margin: 0;
+}

@@ -1,0 +1,9 @@
+@model string
+@using OzelYetenekSinavSistemi.Web.Infrastructure
+@{
+    var cssClass = string.IsNullOrWhiteSpace(Model) ? "site-auth-official-logo" : Model.Trim();
+}
+<img src="~/images/branding/oys-logo.png"
+     asp-append-version="true"
+     alt="@OfficialUniversityBranding.AlternativeText"
+     class="@cssClass" />

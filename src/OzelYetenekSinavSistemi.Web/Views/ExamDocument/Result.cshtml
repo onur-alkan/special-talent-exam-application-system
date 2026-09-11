@@ -1,0 +1,143 @@
+@model OzelYetenekSinavSistemi.Application.ViewModels.Documents.CandidateResultDocumentViewModel
+@using OzelYetenekSinavSistemi.Domain.Enums
+@using OzelYetenekSinavSistemi.Domain.Extensions
+@{
+    Layout = null;
+    ViewData["Title"] = "Sınav Sonuç Belgesi";
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <partial name="_BrowserTabHead" />
+    <link href="~/vendor/bootstrap/5.3.8/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/site-security.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/public-edition.css" rel="stylesheet" asp-append-version="true" />
+    <style>
+        body { background:#f7f8fa; color:#212529; }
+        .document { max-width: 800px; margin: 24px auto; background:#fff; border:1px solid #ddd; padding: 32px; }
+        .doc-header { border-bottom: 3px solid #0d6efd; padding-bottom: 16px; margin-bottom: 24px; }
+        .candidate-no { font-size: 56px; font-weight: 700; color:#0d6efd; line-height: 1; }
+        .photo-box { width: 130px; height: 160px; border:1px solid #ccc; object-fit: cover; background:#fafafa; }
+        .qr-box img { width: 130px; height: 130px; }
+        .field-label { font-size: 12px; color:#888; text-transform: uppercase; }
+        .field-value { font-size: 16px; font-weight: 600; }
+        @@media print {
+            body { background:#fff; }
+            .no-print { display: none !important; }
+            .document { border: none; margin: 0; max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="text-center no-print site-mt-16">
+        <button class="btn btn-primary js-print-document" type="button">Yazdır</button>
+        <a class="btn btn-outline-secondary js-close-window" href="#">Kapat</a>
+    </div>
+
+    <div class="document">
+        <div class="doc-header d-flex justify-content-between align-items-center">
+            <partial name="_OfficialUniversityLogo" model='"site-document-official-logo"' />
+            <div class="text-center flex-grow-1">
+                <h3 class="mb-0">@Model.UniversityName</h3>
+                <div>@Model.FacultyName</div>
+                <strong>SINAV SONUÇ BELGESİ</strong>
+            </div>
+            <img class="photo-box js-hide-on-image-error" src="@(string.IsNullOrWhiteSpace(Model.PhotoPath) ? "" : Url.Action("Application", "CandidatePhoto", new { applicationId = Model.ApplicationId }))" alt="Aday Fotoğrafı" />
+        </div>
+
+        <div class="row">
+            <div class="col-8">
+                <p class="mb-3"><span class="field-label">Sınav / Başvuru</span><br /><span class="field-value">@Model.ExamTitle</span></p>
+                <div class="row">
+                    <div class="col-6"><span class="field-label">Ad Soyad</span><br /><span class="field-value">@Model.FullName</span></div>
+                    <div class="col-6">
+                        <span class="field-label">Kimlik Belgesi Türü</span><br />
+                        <span class="field-value">@Model.Identity.IdentityDocumentTypeDisplayName</span>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <span class="field-label">@Model.Identity.IdentityNumberLabel</span><br />
+                        <span class="field-value">@Model.Identity.MaskedIdentityNumber</span>
+                    </div>
+                    <div class="col-6">
+                        <span class="field-label">Uyruk</span><br />
+                        <span class="field-value">@Model.Identity.NationalityDisplayName</span>
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Identity.IssuingCountryDisplayName) && Model.Identity.IssuingCountryDisplayName != "-")
+                {
+                    <div class="row mt-2">
+                        <div class="col-6">
+                            <span class="field-label">Pasaportu Düzenleyen Ülke</span><br />
+                            <span class="field-value">@Model.Identity.IssuingCountryDisplayName</span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.Identity.PassportExpiryDateDisplay) && Model.Identity.PassportExpiryDateDisplay != "-")
+                        {
+                            <div class="col-6">
+                                <span class="field-label">Pasaport Son Geçerlilik Tarihi</span><br />
+                                <span class="field-value">@Model.Identity.PassportExpiryDateDisplay</span>
+                            </div>
+                        }
+                    </div>
+                }
+                <div class="mt-3">
+                    <span class="field-label">Aday Numarası</span><br />
+                    <span class="candidate-no">@Model.CandidateNo</span>
+                </div>
+            </div>
+            <div class="col-4 text-center qr-box">
+                <img src="@Model.QrCodeDataUri" alt="QR Kod" />
+                <div class="small text-muted mt-2">Doğrulama Kodu</div>
+                <div><code>@Model.VerificationCode</code></div>
+            </div>
+        </div>
+
+        <hr />
+        <h5>Tercihler</h5>
+        <ol>
+            @foreach (var pref in Model.Preferences)
+            {
+                <li>@pref</li>
+            }
+        </ol>
+
+        <hr />
+        <h5>Sınav Sonucu</h5>
+        <div class="row">
+            <div class="col-6 mb-3">
+                <span class="field-label">Sınava Girme Durumu</span><br />
+                <span class="field-value">@Model.AttendanceStatus.ToDisplayText()</span>
+            </div>
+            <div class="col-6 mb-3">
+                <span class="field-label">Sınav Puanı</span><br />
+                <span class="field-value">@(Model.ExamScore.HasValue ? Model.ExamScore.Value.ToString("0.##") : "—")</span>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.CandidateVisibleDescription))
+            {
+                <div class="col-12 mb-3">
+                    <span class="field-label">Açıklama</span><br />
+                    <span class="field-value">@Model.CandidateVisibleDescription</span>
+                </div>
+            }
+            @if (Model.EvaluatedDate.HasValue)
+            {
+                <div class="col-12 mb-3">
+                    <span class="field-label">Değerlendirme Tarihi</span><br />
+                    <span class="field-value">@Model.EvaluatedDate.Value.ToString("dd.MM.yyyy HH:mm")</span>
+                </div>
+            }
+        </div>
+
+        <hr />
+        <div class="d-flex justify-content-between small text-muted">
+            <div>Doğrulama Kodu: @Model.VerificationCode</div>
+            <div>Doğrulama: @Model.VerificationUrl</div>
+        </div>
+    </div>
+    <script src="~/vendor/bootstrap/5.3.8/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

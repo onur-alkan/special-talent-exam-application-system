@@ -1,0 +1,88 @@
+@{
+    string Active(string controller, string? action = null)
+    {
+        var c = ViewContext.RouteData.Values["controller"]?.ToString();
+        var a = ViewContext.RouteData.Values["action"]?.ToString();
+        var match = string.Equals(c, controller, StringComparison.OrdinalIgnoreCase)
+            && (action is null || string.Equals(a, action, StringComparison.OrdinalIgnoreCase));
+        return match ? "active" : "";
+    }
+}
+<nav class="pe-side-nav" aria-label="Aday menüsü">
+    <div class="pe-side-nav__header px-3 py-3 border-bottom">
+        <div class="dropdown profile-element">
+            <university-logo variant="sidebar"></university-logo>
+            <div class="mt-2">
+                <span class="d-block fw-bold">@User.GetFullName()</span>
+                <span class="text-muted small">Aday</span>
+            </div>
+            <ul class="list-unstyled small mt-2 mb-0">
+                <li>
+                    <a class="dropdown-item px-0" asp-controller="CandidateProfile" asp-action="Index">Profilim</a>
+                </li>
+            </ul>
+        </div>
+        <div class="logo-element">
+            <university-logo variant="sidebar"></university-logo>
+        </div>
+    </div>
+
+    <ul class="nav flex-column pe-side-nav__list px-2 py-2" id="side-menu">
+        <li class="nav-item @Active("CandidateDashboard")">
+            <a class="nav-link @Active("CandidateDashboard")"
+               asp-controller="CandidateDashboard"
+               asp-action="Index"
+               title="Ana Sayfa"
+               aria-label="Ana Sayfa">
+                <span class="nav-label">Ana Sayfa</span>
+            </a>
+        </li>
+        <li class="nav-item @Active("CandidateApplication", "Index")">
+            <a class="nav-link @Active("CandidateApplication", "Index")"
+               asp-controller="CandidateApplication"
+               asp-action="Index"
+               title="Aktif Başvurular"
+               aria-label="Aktif Başvurular">
+                <span class="nav-label">Aktif Başvurular</span>
+            </a>
+        </li>
+        <li class="nav-item @Active("CandidateApplication", "My")">
+            <a class="nav-link @Active("CandidateApplication", "My")"
+               asp-controller="CandidateApplication"
+               asp-action="My"
+               title="Başvurularım"
+               aria-label="Başvurularım">
+                <span class="nav-label">Başvurularım</span>
+            </a>
+        </li>
+        <li class="nav-item @Active("CandidateProfile")">
+            <a class="nav-link @Active("CandidateProfile")"
+               asp-controller="CandidateProfile"
+               asp-action="Index"
+               title="Profilim"
+               aria-label="Profilim">
+                <span class="nav-label">Profilim</span>
+            </a>
+        </li>
+        <li class="nav-item @Active("Account", "ChangePassword")">
+            <a class="nav-link @Active("Account", "ChangePassword")"
+               asp-controller="Account"
+               asp-action="ChangePassword"
+               title="Şifre Değiştir"
+               aria-label="Şifre Değiştir">
+                <span class="nav-label">Şifre Değiştir</span>
+            </a>
+        </li>
+        <li class="nav-item oys-sidebar-logout-item mt-2">
+            <form asp-controller="Account" asp-action="Logout" method="post" class="oys-sidebar-logout">
+                <button type="submit"
+                        class="oys-sidebar-logout__button"
+                        aria-label="Çıkış Yap"
+                        title="Çıkış Yap">
+                    <span class="pe-logout-mark" aria-hidden="true"></span>
+                    <span class="nav-label oys-sidebar-logout__text">Çıkış</span>
+                </button>
+            </form>
+        </li>
+    </ul>
+</nav>

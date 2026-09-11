@@ -1,0 +1,24 @@
+@model OzelYetenekSinavSistemi.Application.ViewModels.Documents.DocumentIdentityViewModel
+
+<dl class="row mb-0">
+    <dt class="col-sm-5">Kimlik Belgesi Türü</dt>
+    <dd class="col-sm-7">@Model.IdentityDocumentTypeDisplayName</dd>
+
+    <dt class="col-sm-5">@Model.IdentityNumberLabel</dt>
+    <dd class="col-sm-7">@Model.MaskedIdentityNumber</dd>
+
+    <dt class="col-sm-5">Uyruk</dt>
+    <dd class="col-sm-7">@Model.NationalityDisplayName</dd>
+
+    @if (!string.IsNullOrEmpty(Model.IssuingCountryDisplayName) && Model.IssuingCountryDisplayName != "-")
+    {
+        <dt class="col-sm-5">Pasaportu Düzenleyen Ülke</dt>
+        <dd class="col-sm-7">@Model.IssuingCountryDisplayName</dd>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.PassportExpiryDateDisplay) && Model.PassportExpiryDateDisplay != "-")
+    {
+        <dt class="col-sm-5">Pasaport Son Geçerlilik Tarihi</dt>
+        <dd class="col-sm-7">@Model.PassportExpiryDateDisplay</dd>
+    }
+</dl>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <partial name="_BrowserTabHead" />
+
+    <link href="~/vendor/bootstrap/5.3.8/css/bootstrap.min.css" rel="stylesheet" />
+    <partial name="_VendorStyles" />
+    <link href="~/css/site-security.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/public-edition.css" rel="stylesheet" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body class="pe-app">
+    <div class="pe-shell d-flex">
+        <div class="offcanvas-lg offcanvas-start pe-sidebar-panel border-end"
+             tabindex="-1"
+             id="peSideNav"
+             aria-labelledby="peSideNavLabel">
+            <div class="offcanvas-header d-lg-none">
+                <h2 class="offcanvas-title h5 mb-0" id="peSideNavLabel">Menü</h2>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="offcanvas"
+                        data-bs-target="#peSideNav"
+                        aria-label="Kapat"></button>
+            </div>
+            <div class="offcanvas-body p-0">
+                <partial name="_AdminSidebar" />
+            </div>
+        </div>
+
+        <div class="pe-main flex-grow-1 d-flex flex-column min-vh-100">
+            <header>
+                <partial name="_TopNavbar" />
+            </header>
+
+            <partial name="_Breadcrumb" />
+
+            <main class="pe-content flex-grow-1 container-fluid py-3">
+                @RenderBody()
+            </main>
+
+            <partial name="_Footer" />
+        </div>
+    </div>
+
+    <script src="~/vendor/jquery/3.7.1/js/jquery.min.js"></script>
+    <script src="~/vendor/bootstrap/5.3.8/js/bootstrap.bundle.min.js"></script>
+    <partial name="_VendorScripts" />
+    <script src="~/js/input-text-validation.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <partial name="_Notifications" />
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

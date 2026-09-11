@@ -1,0 +1,15 @@
+@{
+    ViewData["Title"] = "Yetkisiz Erişim";
+    Layout = "_AuthLayout";
+}
+
+<div class="text-center">
+    <h1 class="logo-name site-status-code-danger">403</h1>
+    <h3 class="font-bold">Erişim Reddedildi</h3>
+    <div class="error-desc">
+        Bu sayfayı görüntülemek için gerekli yetkiye sahip değilsiniz.
+    </div>
+    <div class="m-t">
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Ana Sayfaya Dön</a>
+    </div>
+</div>

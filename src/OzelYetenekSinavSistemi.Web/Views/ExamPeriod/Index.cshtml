@@ -1,0 +1,48 @@
+@model IReadOnlyList<OzelYetenekSinavSistemi.Domain.Entities.ExamPeriod>
+@{
+    var isSuperAdmin = User.IsInRole(OzelYetenekSinavSistemi.Domain.Common.DomainConstants.RoleNames.SuperAdmin);
+}
+
+<div class="card">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <h5 class="mb-0">Sınav Dönemleri</h5>
+        @if (isSuperAdmin)
+        {
+            <div>
+                <a asp-action="Create" class="btn btn-primary btn-sm">Yeni Sınav Dönemi</a>
+            </div>
+        }
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover align-middle dataTable js-datatable"
+                   data-page-length="25">
+                <thead>
+                    <tr><th>Başlık</th><th>Başlangıç</th><th>Bitiş</th><th>Maks. Tercih</th><th>Durum</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model)
+                    {
+                        <tr>
+                            <td>@e.Title</td>
+                            <td>@e.StartDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>@e.EndDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>@e.MaxPreferences</td>
+                            <td>
+                                @if (e.IsClosed) { <span class="badge text-bg-danger">Kapalı</span> }
+                                else if (e.IsActive) { <span class="badge text-bg-primary">Aktif</span> }
+                                else { <span class="badge text-bg-secondary">Pasif</span> }
+                            </td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@e.Id" class="btn btn-sm btn-secondary">Detay</a>
+                                <a asp-action="Edit" asp-route-id="@e.Id" class="btn btn-sm btn-info">Düzenle</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@* DataTables: site.js .js-datatable *@

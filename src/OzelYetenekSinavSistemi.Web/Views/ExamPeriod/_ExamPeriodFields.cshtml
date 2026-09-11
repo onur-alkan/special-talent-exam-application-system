@@ -1,0 +1,36 @@
+@model OzelYetenekSinavSistemi.Application.ViewModels.ExamPeriods.ExamPeriodFormViewModel
+
+<input type="hidden" asp-for="Id" />
+<div class="form-group">
+    <label asp-for="Title"></label>
+    <input asp-for="Title" class="form-control" />
+    <span asp-validation-for="Title" class="text-danger small"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Description"></label>
+    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+    <span asp-validation-for="Description" class="text-danger small"></span>
+</div>
+<div class="row">
+    <div class="form-group col-md-6">
+        <label asp-for="StartDate"></label>
+        <input asp-for="StartDate" class="form-control" type="datetime-local" />
+        <span asp-validation-for="StartDate" class="text-danger small"></span>
+    </div>
+    <div class="form-group col-md-6">
+        <label asp-for="EndDate"></label>
+        <input asp-for="EndDate" class="form-control" type="datetime-local" />
+        <span asp-validation-for="EndDate" class="text-danger small"></span>
+    </div>
+</div>
+<div class="row">
+    <div class="form-group col-md-6">
+        <label asp-for="MaxPreferences"></label>
+        <input asp-for="MaxPreferences" class="form-control" type="number" min="1" />
+        <span asp-validation-for="MaxPreferences" class="text-danger small"></span>
+    </div>
+    <div class="form-group col-md-6">
+        <label class="d-block">@Html.DisplayNameFor(m => m.IsActive)</label>
+        <label class="checkbox-inline"><input asp-for="IsActive" type="checkbox" /> Aktif</label>
+    </div>
+</div>

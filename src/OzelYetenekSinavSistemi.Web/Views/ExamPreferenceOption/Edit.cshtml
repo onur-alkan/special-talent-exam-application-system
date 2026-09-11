@@ -1,0 +1,51 @@
+@model OzelYetenekSinavSistemi.Application.ViewModels.ExamPeriods.PreferenceOptionFormViewModel
+
+<div class="card">
+    <div class="card-header"><h1 class="h5 mb-0">Tercih Seçeneğini Düzenle</h1></div>
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ExamPeriodId" />
+
+            <div class="row mb-3">
+                <label asp-for="DisplayOrder" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-2">
+                    <input asp-for="DisplayOrder" class="form-control" type="number" min="1" max="999" />
+                    <span asp-validation-for="DisplayOrder" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label asp-for="PreferenceName" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-8">
+                    <input asp-for="PreferenceName" class="form-control" autocomplete="off" />
+                    <span asp-validation-for="PreferenceName" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label asp-for="IsActive" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-8">
+                    <div class="form-check mt-2">
+                        <input asp-for="IsActive" type="checkbox" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label">Aktif</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-0">
+                <div class="col-sm-10 offset-sm-2 text-end">
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                    <a asp-action="Manage"
+                       asp-route-examPeriodId="@Model.ExamPeriodId"
+                       class="btn btn-warning">Vazgeç</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

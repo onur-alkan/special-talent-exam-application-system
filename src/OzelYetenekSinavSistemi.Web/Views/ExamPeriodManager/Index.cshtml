@@ -1,0 +1,24 @@
+@model IReadOnlyList<OzelYetenekSinavSistemi.Domain.Entities.ExamPeriod>
+
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">Başvuru Yöneticileri - Sınav Dönemi Seçin</h5></div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead><tr><th>Sınav Dönemi</th><th>Durum</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var e in Model)
+                    {
+                        <tr>
+                            <td>@e.Title</td>
+                            <td>@(e.IsClosed ? "Kapalı" : e.IsActive ? "Aktif" : "Pasif")</td>
+                            <td class="text-end">
+                                <a asp-action="Manage" asp-route-examPeriodId="@e.Id" class="btn btn-sm btn-primary">Yöneticileri Ata</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

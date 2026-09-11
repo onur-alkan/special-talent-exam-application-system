@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{678C61DB-2107-4F48-AAE4-4B2BA78403CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzelYetenekSinavSistemi.Domain", "src\OzelYetenekSinavSistemi.Domain\OzelYetenekSinavSistemi.Domain.csproj", "{8A461E15-D507-434D-88BC-9ABC117F4EA8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzelYetenekSinavSistemi.Application", "src\OzelYetenekSinavSistemi.Application\OzelYetenekSinavSistemi.Application.csproj", "{98E20035-AC75-4A9D-832A-E2A72EBDAFA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzelYetenekSinavSistemi.Infrastructure", "src\OzelYetenekSinavSistemi.Infrastructure\OzelYetenekSinavSistemi.Infrastructure.csproj", "{14A75EAA-6A8A-4713-80A7-FDE857F2CAFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzelYetenekSinavSistemi.Web", "src\OzelYetenekSinavSistemi.Web\OzelYetenekSinavSistemi.Web.csproj", "{CA270D01-C5A5-4FA0-9662-7AD9CACE3A4F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8FF7F29A-92AC-4C32-9A7D-D2284531F379}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzelYetenekSinavSistemi.Tests", "tests\OzelYetenekSinavSistemi.Tests\OzelYetenekSinavSistemi.Tests.csproj", "{D1A344DE-D47C-40A0-B4BC-D2E2E93A732E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8A461E15-D507-434D-88BC-9ABC117F4EA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A461E15-D507-434D-88BC-9ABC117F4EA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A461E15-D507-434D-88BC-9ABC117F4EA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A461E15-D507-434D-88BC-9ABC117F4EA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98E20035-AC75-4A9D-832A-E2A72EBDAFA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98E20035-AC75-4A9D-832A-E2A72EBDAFA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98E20035-AC75-4A9D-832A-E2A72EBDAFA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98E20035-AC75-4A9D-832A-E2A72EBDAFA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14A75EAA-6A8A-4713-80A7-FDE857F2CAFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14A75EAA-6A8A-4713-80A7-FDE857F2CAFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14A75EAA-6A8A-4713-80A7-FDE857F2CAFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14A75EAA-6A8A-4713-80A7-FDE857F2CAFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA270D01-C5A5-4FA0-9662-7AD9CACE3A4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA270D01-C5A5-4FA0-9662-7AD9CACE3A4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA270D01-C5A5-4FA0-9662-7AD9CACE3A4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA270D01-C5A5-4FA0-9662-7AD9CACE3A4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1A344DE-D47C-40A0-B4BC-D2E2E93A732E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1A344DE-D47C-40A0-B4BC-D2E2E93A732E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1A344DE-D47C-40A0-B4BC-D2E2E93A732E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1A344DE-D47C-40A0-B4BC-D2E2E93A732E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8A461E15-D507-434D-88BC-9ABC117F4EA8} = {678C61DB-2107-4F48-AAE4-4B2BA78403CD}
+		{98E20035-AC75-4A9D-832A-E2A72EBDAFA7} = {678C61DB-2107-4F48-AAE4-4B2BA78403CD}
+		{14A75EAA-6A8A-4713-80A7-FDE857F2CAFE} = {678C61DB-2107-4F48-AAE4-4B2BA78403CD}
+		{CA270D01-C5A5-4FA0-9662-7AD9CACE3A4F} = {678C61DB-2107-4F48-AAE4-4B2BA78403CD}
+		{D1A344DE-D47C-40A0-B4BC-D2E2E93A732E} = {8FF7F29A-92AC-4C32-9A7D-D2284531F379}
+	EndGlobalSection
+EndGlobal
