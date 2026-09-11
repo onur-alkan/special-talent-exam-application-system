@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Data.SqlClient;
+using OzelYetenekSinavSistemi.Tests.TestSupport;
 
 namespace OzelYetenekSinavSistemi.Tests.Validation.Http;
 
@@ -106,17 +107,8 @@ END";
         }
     }
 
-    internal static SqlConnectionStringBuilder ResolveMasterConnectionBuilder()
-    {
-        var baseConnection = Environment.GetEnvironmentVariable("OYS_TEST_CONNECTION")
-            ?? @"Server=.\SQLEXPRESS;Database=OzelYetenekSinavSistemi;Trusted_Connection=True;TrustServerCertificate=True;";
-
-        var builder = new SqlConnectionStringBuilder(baseConnection)
-        {
-            InitialCatalog = "master"
-        };
-        return builder;
-    }
+    internal static SqlConnectionStringBuilder ResolveMasterConnectionBuilder() =>
+        TestSqlServerConnection.CreateMasterBuilder();
 
     internal static async Task DropDatabaseByNameAsync(string databaseName, CancellationToken cancellationToken = default)
     {
@@ -216,16 +208,8 @@ WHERE name LIKE 'OYS_ValidationHttp[_]%' ESCAPE '\'
 
     private async Task RunSqlCmdScriptAsync(string scriptPath, CancellationToken cancellationToken)
     {
-        var arguments = BuildSqlCmdArguments(scriptPath);
-        var startInfo = new ProcessStartInfo
-        {
-            FileName = "sqlcmd",
-            Arguments = arguments,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
+        var builder = new SqlConnectionStringBuilder(ConnectionString);
+        var startInfo = TestSqlServerConnection.CreateSqlCmdStartInfo(builder, DatabaseName, scriptPath);
 
         using var process = Process.Start(startInfo)
             ?? throw new InvalidOperationException("sqlcmd başlatılamadı.");
@@ -239,31 +223,6 @@ WHERE name LIKE 'OYS_ValidationHttp[_]%' ESCAPE '\'
             throw new InvalidOperationException(
                 $"Geçici veritabanı şeması uygulanamadı (sqlcmd exit {process.ExitCode}). {stderr} {stdout}");
         }
-    }
-
-    private string BuildSqlCmdArguments(string scriptPath)
-    {
-        var builder = new SqlConnectionStringBuilder(ConnectionString);
-        var args = new List<string>
-        {
-            "-S", builder.DataSource,
-            "-d", DatabaseName,
-            "-i", $"\"{scriptPath}\"",
-            "-b",
-            "-I"
-        };
-
-        if (builder.IntegratedSecurity)
-            args.Add("-E");
-        else
-        {
-            args.Add("-U");
-            args.Add(builder.UserID);
-            args.Add("-P");
-            args.Add(builder.Password);
-        }
-
-        return string.Join(' ', args);
     }
 
     private async Task VerifySchemaAsync(CancellationToken cancellationToken)

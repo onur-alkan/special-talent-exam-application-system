@@ -108,12 +108,17 @@ public sealed class DisqualifiedAttendanceStatusTests
     }
 
     [Fact]
-    public void TeacherRevision_IsRecorded()
+    public void Disqualified_IsDefinedSelectableAttendanceStatus_WithCentralizedTurkishLabel()
     {
-        var revisions = ReadProjectFile("docs", "TeacherRevisions.md");
+        Assert.True(Enum.IsDefined(typeof(AttendanceStatus), AttendanceStatus.Disqualified));
+        Assert.Equal(4, Enum.GetValues<AttendanceStatus>().Length);
+        Assert.Equal("Diskalifiye", AttendanceStatus.Disqualified.ToDisplayText());
+
+        var evaluate = ReadProjectFile(
+            "src", "OzelYetenekSinavSistemi.Web", "Views", "ExamResult", "Evaluate.cshtml");
         Assert.Contains(
-            "PRD 4.5 — Sınava Girme Durumu seçeneklerine Diskalifiye eklendi.",
-            revisions,
+            "<option value=\"@((int)AttendanceStatus.Disqualified)\">@AttendanceStatus.Disqualified.ToDisplayText()</option>",
+            evaluate,
             StringComparison.Ordinal);
     }
 

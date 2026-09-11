@@ -1,5 +1,6 @@
 using Dapper;
 using Microsoft.Data.SqlClient;
+using OzelYetenekSinavSistemi.Tests.TestSupport;
 
 namespace OzelYetenekSinavSistemi.Tests.Validation.Http;
 
@@ -61,12 +62,7 @@ internal sealed class DevelopmentDatabaseSnapshot
     {
         try
         {
-            var builder = new SqlConnectionStringBuilder(
-                Environment.GetEnvironmentVariable("OYS_TEST_CONNECTION")
-                ?? @"Server=.\SQLEXPRESS;Database=OzelYetenekSinavSistemi;Trusted_Connection=True;TrustServerCertificate=True;")
-            {
-                InitialCatalog = "OzelYetenekSinavSistemi"
-            };
+            var builder = TestSqlServerConnection.CreateBuilder("OzelYetenekSinavSistemi");
 
             await using var connection = new SqlConnection(builder.ConnectionString);
             await connection.OpenAsync().ConfigureAwait(false);

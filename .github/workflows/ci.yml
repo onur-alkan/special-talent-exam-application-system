@@ -5,30 +5,82 @@ on:
     branches: [ main, master ]
   pull_request:
 
+# Disposable CI-only SA password for the job-scoped SQL Server container.
+# Not an institutional credential and not read from repository secrets.
+env:
+  OYS_CI_SQL_SA_PASSWORD: "OysCiSql2022-TestPw!"
+
 jobs:
   build-test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    env:
+      OYS_TEST_SQLSERVER_CONNECTION: "Server=127.0.0.1,1433;User ID=sa;Password=${{ env.OYS_CI_SQL_SA_PASSWORD }};Encrypt=True;TrustServerCertificate=True;"
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_SA_PASSWORD: "${{ env.OYS_CI_SQL_SA_PASSWORD }}"
+          MSSQL_COLLATION: Turkish_CI_AS
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/bin/bash -c '</dev/tcp/127.0.0.1/1433'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 20
+          --health-start-period 25s
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Mask CI SQL password
+        run: echo "::add-mask::${OYS_CI_SQL_SA_PASSWORD}"
 
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
 
+      - name: Install sqlcmd
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y curl gnupg apt-transport-https unixodbc-dev
+          curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg
+          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-prod.gpg] https://packages.microsoft.com/ubuntu/22.04/prod jammy main" | sudo tee /etc/apt/sources.list.d/mssql-release.list
+          sudo apt-get update
+          sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18
+          echo "/opt/mssql-tools18/bin" >> "$GITHUB_PATH"
+
+      - name: Wait for SQL Server
+        env:
+          SQLCMDPASSWORD: ${{ env.OYS_CI_SQL_SA_PASSWORD }}
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 40); do
+            if sqlcmd -S 127.0.0.1,1433 -U sa -C -Q "SELECT 1" -b -o /dev/null; then
+              echo "SQL Server is ready."
+              exit 0
+            fi
+            echo "Waiting for SQL Server (attempt ${i})..."
+            sleep 3
+          done
+          echo "SQL Server did not accept logins in time."
+          exit 1
+
       - name: Restore
-        run: dotnet restore .\OzelYetenekSinavSistemi.sln
+        run: dotnet restore OzelYetenekSinavSistemi.sln
 
       - name: Build (Release)
-        run: dotnet build .\OzelYetenekSinavSistemi.sln -c Release --no-restore
+        run: dotnet build OzelYetenekSinavSistemi.sln -c Release --no-restore
 
       - name: Test (Release)
-        run: dotnet test .\OzelYetenekSinavSistemi.sln -c Release --no-build --logger "trx;LogFileName=test-results.trx"
+        run: dotnet test OzelYetenekSinavSistemi.sln -c Release --no-build --logger "trx;LogFileName=test-results.trx"
 
       - name: Vulnerable package scan
         run: |
-          dotnet list .\OzelYetenekSinavSistemi.sln package --vulnerable --include-transitive
+          dotnet list OzelYetenekSinavSistemi.sln package --vulnerable --include-transitive
         continue-on-error: false
 
       - name: Upload test results

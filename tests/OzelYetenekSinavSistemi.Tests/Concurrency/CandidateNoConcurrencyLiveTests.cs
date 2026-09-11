@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Globalization;
-using System.Text;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using Moq;
@@ -13,6 +12,7 @@ using OzelYetenekSinavSistemi.Domain.Common;
 using OzelYetenekSinavSistemi.Infrastructure.Persistence;
 using OzelYetenekSinavSistemi.Infrastructure.Persistence.Repositories;
 using OzelYetenekSinavSistemi.Infrastructure.Services;
+using OzelYetenekSinavSistemi.Tests.TestSupport;
 
 namespace OzelYetenekSinavSistemi.Tests.Concurrency;
 
@@ -474,28 +474,7 @@ END");
     private static async Task RunSqlCmdAsync(string databaseName, string scriptPath)
     {
         var builder = new SqlConnectionStringBuilder(BuildConnectionString(databaseName));
-        var args = new List<string> { "-S", builder.DataSource, "-d", databaseName, "-i", $"\"{scriptPath}\"", "-b", "-I" };
-        if (builder.IntegratedSecurity)
-            args.Add("-E");
-        else
-        {
-            args.Add("-U");
-            args.Add(builder.UserID);
-            args.Add("-P");
-            args.Add(builder.Password);
-        }
-
-        var psi = new ProcessStartInfo
-        {
-            FileName = "sqlcmd",
-            Arguments = string.Join(' ', args),
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            StandardOutputEncoding = Encoding.UTF8,
-            StandardErrorEncoding = Encoding.UTF8
-        };
+        var psi = TestSqlServerConnection.CreateSqlCmdStartInfo(builder, databaseName, scriptPath);
         using var process = Process.Start(psi) ?? throw new InvalidOperationException("sqlcmd başlatılamadı.");
         var stdout = await process.StandardOutput.ReadToEndAsync();
         var stderr = await process.StandardError.ReadToEndAsync();
@@ -517,12 +496,8 @@ END");
         }
     }
 
-    private static string BuildConnectionString(string initialCatalog)
-    {
-        var baseConnection = Environment.GetEnvironmentVariable("OYS_TEST_CONNECTION")
-            ?? @"Server=.\SQLEXPRESS;Database=OzelYetenekSinavSistemi;Trusted_Connection=True;TrustServerCertificate=True;";
-        return new SqlConnectionStringBuilder(baseConnection) { InitialCatalog = initialCatalog }.ConnectionString;
-    }
+    private static string BuildConnectionString(string initialCatalog) =>
+        TestSqlServerConnection.BuildConnectionString(initialCatalog);
 
     private static async Task<DevSnapshot?> CaptureDevelopmentSnapshotAsync()
     {
